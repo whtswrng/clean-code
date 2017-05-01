@@ -7,8 +7,9 @@ class MethodParser {
 	static parse(lineReader, filePath) {
 		parseMethods(lineReader);
 
+
 		function parseMethods(lineReader){
-			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)\s?(\(.*\))\s+\{/g;
+			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)\s?(\([a-zA-Z0-9,\s]*\))\s?\{/g;
 			let methodLineCount = 0;
 			let methodName = '';
 			let methodArguments = [];
@@ -26,6 +27,9 @@ class MethodParser {
 				const methodNameFromRegexResult = methodNameRegex.exec(line);
 
 				if(methodNameFromRegexResult) {
+					if(isInMethod) {
+						reset();
+					}
 					isInMethod = true;
 					methodCount++;
 					methodName = methodNameFromRegexResult[1];
@@ -54,6 +58,7 @@ class MethodParser {
 						}
 					}
 				}
+
 			}
 
 

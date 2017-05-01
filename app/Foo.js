@@ -1,21 +1,12 @@
 class Foo {
-	getFoo(a, b, c, d) {
+	getFoo(a, b, c) {
 		console.log('foo');
 	}
 
 	assertSomething(value, booleanValue) {
-		if(booleanValue) {
-
-		} else {
-
-		}
 	}
 
-	foo() {
-		setTimeout(() => {
-			setTimeout(() => {
-				// hnus
-			})
-		})
+	foo(value) {
+
 	}
 }
