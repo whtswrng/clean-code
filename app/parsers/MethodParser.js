@@ -31,11 +31,11 @@ class MethodParser {
 				if(isInMethod) {
 					methodLineCount++;
 
-					if(line.match(/.{/g)) {
+					if(isOpenCurlyBracketInLine(line)) {
 						bracketCounter++;
 					}
 
-					if(line.match(/.}/g)) {
+					if(isCloseCurlyBracketInLine(line)) {
 						bracketCounter--;
 						if(bracketCounter < 1) {
 							methodLineCount = methodLineCount - 2;
@@ -99,6 +99,13 @@ class MethodParser {
 
 }
 
+function isOpenCurlyBracketInLine(line) {
+	return line.match(/.{/g)
+}
+
+function isCloseCurlyBracketInLine(line) {
+	return line.match(/.}/g)
+}
 
 
 module.exports = MethodParser;
