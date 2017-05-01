@@ -9,7 +9,7 @@ class MethodParser {
 
 
 		function parseMethods(lineReader){
-			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)\s?(\([a-zA-Z0-9,\s]*\))\s?\{/g;
+			const methodNameRegex = /((?!if|for|while|switch|function\b)\b\w+)\s?(\([a-zA-Z0-9,\s]*\))\s?\{/g;
 			let methodLineCount = 0;
 			let methodName = '';
 			let methodArguments = [];
@@ -18,6 +18,7 @@ class MethodParser {
 			let isInCallback = false;
 			let isInMethod = false;
 			let bracketCounter = 0;
+			let callbackNestingLines = [];
 
 			lineReader.on('line', parseLine);
 
@@ -28,6 +29,7 @@ class MethodParser {
 
 				if(methodNameFromRegexResult) {
 					if(isInMethod) {
+						finish();
 						reset();
 					}
 					isInMethod = true;
@@ -79,6 +81,7 @@ class MethodParser {
 			function countCallbackNesting(line) {
 				if(isCallbackOpenLine(line)){
 					if(isInCallback) {
+						callbackNestingLines.push(line);
 						callbackNesting++;
 					}
 					isInCallback = true;
@@ -91,6 +94,7 @@ class MethodParser {
 
 			function reset() {
 				isInMethod = false;
+				callbackNestingLines = [];
 				callbackNesting = 0;
 				isInCallback = false;
 				bracketCounter = 0;
@@ -101,7 +105,7 @@ class MethodParser {
 			function finish() {
 				callbackNesting++;
 				checkMethodLinesLength(methodName, methodLineCount);
-				checkCallbackNesting(methodName, callbackNesting);
+				checkCallbackNesting(methodName, callbackNesting, callbackNestingLines);
 				// console.log('Method Sucessfully parsed!');
 				// console.log('Method name: ', methodName, 'Lines: ', methodLineCount);	
 			}
@@ -130,14 +134,18 @@ class MethodParser {
 			}
 		}
 
-		function checkCallbackNesting(methodName, callbackNesting) {
-			const errorMessage = `  Method ${methodName.bold} in file ${filePath.bold} has ${callbackNesting} callback nesting. ` +
-					`Consider refactoring.`;
+		function checkCallbackNesting(methodName, callbackNesting, callbackNestingLines) {
+			const errorMessage = `  Method ${methodName.bold} in file ${filePath.bold} has problem with callback nesting. ` +
+					`Consider refactoring. `;
 
 			if(callbackNesting > RULES.MAX_CALLBACK_NESTING_COUNT) {
 				console.error('\n');
 				console.error(`✖ Callback hell`.underline.red);
 				console.error(errorMessage.underline.yellow);
+				console.error('Lines: '.underline.red);
+				_.each(callbackNestingLines, (line) => {
+					console.error(line.underline.red);
+				})
 			}
 		}
 
@@ -175,7 +183,7 @@ function isCloseCurlyBracketInLine(line) {
 }
 
 function isCallbackOpenLine(line) {
-	return line.match(/=>\s?{/g);
+	return line.match(/=>\s?{|function\(.*\)\s?{/g);
 }
 
 function isCallbackCloseLine(line) {
