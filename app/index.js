@@ -37,7 +37,23 @@ function initAsRecursive() {
 		}
 
 		_.each(files, (filePath) => {
-			initAsFile(filePath);
+			if(hasFilePathCorrectExtension(filePath)){
+				initAsFile(filePath);
+			} else {
+				console.log('skipping> ', filePath);
+			}
 		});
 	});
+}
+
+function hasFilePathCorrectExtension(filePath) {
+	let isCorrect = false;
+
+	_.each(RULES.DEFAULT_FILE_EXTENSIONS, (extension) => {
+		if(filePath.indexOf(extension) !== -1) {
+			isCorrect = true;
+		}
+	});
+
+	return isCorrect;
 }
