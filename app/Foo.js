@@ -1,12 +1,14 @@
 class Foo {
-	getFoo(a, b, c) {
-		console.log('foo');
-	}
-
-	assertSomething(value, booleanValue) {
-	}
-
-	foo(value) {
+	constructor(a, b, c, d) {
 
 	}
+
+	getAllFoo(){
+		setTimeout(function() {
+			setTimeout(function(){
+				// cb hell
+			})
+		})
+	}
+
 }
