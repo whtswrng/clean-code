@@ -11,6 +11,8 @@ class MethodParser {
 			let methodLineCount = 0;
 			let methodName = '';
 			let methodCount = 0;
+			let callbackNesting = 0;
+			let isInCallback = false;
 			let isInMethod = false;
 			let bracketCounter = 0;
 
@@ -29,6 +31,7 @@ class MethodParser {
 				}
 
 				if(isInMethod) {
+					countCallbackNesting(line);
 					methodLineCount++;
 
 					if(isOpenCurlyBracketInLine(line)) {
@@ -46,15 +49,32 @@ class MethodParser {
 				}
 			}
 
+			function countCallbackNesting(line) {
+				if(isCallbackOpenLine(line)){
+					if(isInCallback) {
+						callbackNesting++;
+					}
+					isInCallback = true;
+				}
+
+				if(isCallbackCloseLine(line)) {
+					isInCallback = false;
+				}
+			}
+
 			function reset() {
 				isInMethod = false;
+				callbackNesting = 0;
+				isInCallback = false;
 				bracketCounter = 0;
 				methodName = '';
 				methodLineCount = 0;
 			}
 
 			function finish() {
+				callbackNesting++;
 				checkMethodLinesLength(methodName, methodLineCount);
+				checkCallbackNesting(methodName, callbackNesting);
 				// console.log('Method Sucessfully parsed!');
 				// console.log('Method name: ', methodName, 'Lines: ', methodLineCount);	
 			}
@@ -84,6 +104,18 @@ class MethodParser {
 			}
 		}
 
+		function checkCallbackNesting(methodName, callbackNesting) {
+			const errorMessage = `  Method ${methodName.bold} in file ${filePath.bold} has ${callbackNesting} callback nesting. ` +
+					`Consider refactoring.`;
+
+			if(callbackNesting > 1) {
+				console.error('\n');
+				console.error(`✖ Callback hell`.underline.red);
+				console.error(errorMessage.underline.yellow);
+			}
+		}
+
+
 		function checkMethodLinesLength(methodName, methodLineCount) {
 			const errorMessage = `  ${methodLineCount} line of code in method "${methodName.bold}" in file "${filePath.bold}". ` + 
 				`Recommended line length is ${RULES.METHOD_LINES_LENGTH}.`;
@@ -105,6 +137,14 @@ function isOpenCurlyBracketInLine(line) {
 
 function isCloseCurlyBracketInLine(line) {
 	return line.match(/.}/g)
+}
+
+function isCallbackOpenLine(line) {
+	return line.match(/=>\s?{/g);
+}
+
+function isCallbackCloseLine(line) {
+	return line.match(/}\)/g);
 }
 
 

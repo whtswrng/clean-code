@@ -1,9 +1,30 @@
 class Foo {
-	constructor (a, b, c, d) {
-
-	}
-
-	getFoo(a, b, c, d, eeee) {
-		console.log('foo')
+	getFoo(a, b, c) {
+		console.log('foo');
+		for() {
+			console.log('fefefe');
+		}
+		setTimeout(() => {
+			setTimeout(() => {
+			});
+		});
+		
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		setTimeout(() => {
+			});
+		
 	}
 }
