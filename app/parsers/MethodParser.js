@@ -40,7 +40,6 @@ class MethodParser {
 				if(isInMethod) {
 					countCallbackNesting(line);
 					methodLineCount++;
-
 					if(isThereIfStatement(line)){
 						checkForArgumentsInIfStatement(line);
 					}
@@ -168,11 +167,11 @@ function extractMethodArguments(rawMethodArguments) {
 }
 
 function isOpenCurlyBracketInLine(line) {
-	return line.match(/.{/g)
+	return line.match(/{/g)
 }
 
 function isCloseCurlyBracketInLine(line) {
-	return line.match(/.}/g)
+	return line.match(/}/g)
 }
 
 function isCallbackOpenLine(line) {
