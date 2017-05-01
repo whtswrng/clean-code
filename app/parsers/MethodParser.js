@@ -7,7 +7,7 @@ class MethodParser {
 		parseMethods(lineReader);
 
 		function parseMethods(lineReader){
-			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)(\(.*\))\s+\{/g;
+			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)\s?(\(.*\))\s+\{/g;
 			let methodLineCount = 0;
 			let methodName = '';
 			let methodCount = 0;

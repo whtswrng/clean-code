@@ -36,7 +36,7 @@ class ClassParser {
 		})
 
 		function checkClassDefinitionsMoreThanOne(classMatches) {
-			if(classMatches.length > 1){
+			if(classMatches && classMatches.length > 1){
 				console.error('\n');
 				console.error('✖ Class rule violation'.underline.red);
 				console.error(
