@@ -1,30 +1,21 @@
 class Foo {
-	getFoo(a, b, c) {
+	getFoo(a, b, c, d) {
 		console.log('foo');
-		for() {
-			console.log('fefefe');
+	}
+
+	assertSomething(value, booleanValue) {
+		if(booleanValue) {
+
+		} else {
+
 		}
+	}
+
+	foo() {
 		setTimeout(() => {
 			setTimeout(() => {
-			});
-		});
-		
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		setTimeout(() => {
-			});
-		
+				// hnus
+			})
+		})
 	}
 }

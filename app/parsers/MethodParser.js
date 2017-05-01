@@ -1,5 +1,6 @@
 'use strict'
 const RULES = require('../rules');
+const _ = require('lodash');
 
 class MethodParser {
 
@@ -10,6 +11,7 @@ class MethodParser {
 			const methodNameRegex = /((?!if|for|while|switch\b)\b\w+)\s?(\(.*\))\s+\{/g;
 			let methodLineCount = 0;
 			let methodName = '';
+			let methodArguments = [];
 			let methodCount = 0;
 			let callbackNesting = 0;
 			let isInCallback = false;
@@ -27,12 +29,17 @@ class MethodParser {
 					isInMethod = true;
 					methodCount++;
 					methodName = methodNameFromRegexResult[1];
-					checkMethodArguments(methodName, methodNameFromRegexResult[2]);
+					methodArguments = extractMethodArguments(methodNameFromRegexResult[2]);
+					checkMethodArguments(methodName, methodArguments);
 				}
 
 				if(isInMethod) {
 					countCallbackNesting(line);
 					methodLineCount++;
+
+					if(isThereIfStatement(line)){
+						checkForArgumentsInIfStatement(line);
+					}
 
 					if(isOpenCurlyBracketInLine(line)) {
 						bracketCounter++;
@@ -47,6 +54,22 @@ class MethodParser {
 						}
 					}
 				}
+			}
+
+
+			function checkForArgumentsInIfStatement(line) {
+				_.each(methodArguments, (argument) => {
+					const regex = new RegExp(`if\\s?\\(${argument}\\)`, 'g');
+					const errorMessage = `  Argument ${argument.bold} in method ${methodName.bold} in file ${filePath.bold} should not be passed. ` +
+						`Functions should do only one thing.`;
+
+					if(line.match(regex)) {
+						console.error('\n');
+						console.error(`✖ Boolean as argument problem`.underline.red);
+						console.error(errorMessage.underline.yellow)
+							
+					}
+				});
 			}
 
 			function countCallbackNesting(line) {
@@ -93,11 +116,10 @@ class MethodParser {
 		}
 
 		function checkMethodArguments(methodName, methodArguments) {
-			const argumentMatches = methodArguments.split(',');
-			const errorMessage = `  ${argumentMatches.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` + 
+			const errorMessage = `  ${methodArguments.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` + 
 				`Recommended arguments length is ${RULES.ARGUMENTS_LENGTH}.`;
 
-			if(argumentMatches.length > RULES.ARGUMENTS_LENGTH) {
+			if(methodArguments.length > RULES.ARGUMENTS_LENGTH) {
 				console.error('\n');
 				console.error(`✖ Method arguments length violation`.underline.red);
 				console.error(errorMessage.underline.yellow);
@@ -108,7 +130,7 @@ class MethodParser {
 			const errorMessage = `  Method ${methodName.bold} in file ${filePath.bold} has ${callbackNesting} callback nesting. ` +
 					`Consider refactoring.`;
 
-			if(callbackNesting > 1) {
+			if(callbackNesting > RULES.MAX_CALLBACK_NESTING_COUNT) {
 				console.error('\n');
 				console.error(`✖ Callback hell`.underline.red);
 				console.error(errorMessage.underline.yellow);
@@ -129,6 +151,15 @@ class MethodParser {
 
 	}
 
+}
+
+
+function isThereIfStatement(line) {
+	return line.match(/if\(.+\)/g);
+}
+
+function extractMethodArguments(rawMethodArguments) {
+	return rawMethodArguments.replace(/\(|\)/g, '').split(', ');
 }
 
 function isOpenCurlyBracketInLine(line) {
