@@ -7,17 +7,25 @@ const PrinterAdapter = require('../../services/PrinterAdapter');
 
 class ClassParser {
 	static checkLines(lineReader, filePath) {
-		let count = 0;
+	    return new Promise((resolve, reject) => {
+            let count = 0;
 
-		lineReader.on('line', () => count++);
-		lineReader.on('close', () => {
-			if(count > CONSTS.CLASS_LINES_LENGTH){
-				PrinterAdapter.title('Class lines length violation');
-				PrinterAdapter.warning(
-					`Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`
-				);
-			}
-		})
+            lineReader.on('error', (err) => {
+                lineReader.close();
+                reject(err);
+            });
+            lineReader.on('line', () => count++);
+            lineReader.on('close', () => {
+                if(count > CONSTS.CLASS_LINES_LENGTH){
+                    PrinterAdapter.title('Class lines length violation');
+                    PrinterAdapter.warning(
+                        `Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`
+                    );
+                }
+                resolve();
+            })
+		});
+
 	}
 
 	static parse(filePathArgument) {

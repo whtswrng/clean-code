@@ -1,8 +1,5 @@
 'use strict';
-const CONSTS = require('../consts');
 const colors = require('colors');
-const fs = require('fs');
-const _ = require('lodash');
 
 class PrinterAdapter {
     static warning (msg) {
