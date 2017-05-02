@@ -1,8 +1,8 @@
-'strict mode'
+'use strict';
 const fs = require('fs');
 const colors = require('colors');
 const pathArgument = process.argv[2];
-const RULES = require('./rules');
+const CONSTS = require('./consts');
 const MethodParser = require('./parsers/MethodParser');
 const ClassParser = require('./parsers/ClassParser');
 const recursive = require('recursive-readdir');
@@ -49,7 +49,7 @@ function initAsRecursive() {
 function hasFilePathCorrectExtension(filePath) {
 	let isCorrect = false;
 
-	_.each(RULES.DEFAULT_FILE_EXTENSIONS, (extension) => {
+	_.each(CONSTS.DEFAULT_FILE_EXTENSIONS, (extension) => {
 		if(filePath.indexOf(extension) !== -1) {
 			isCorrect = true;
 		}

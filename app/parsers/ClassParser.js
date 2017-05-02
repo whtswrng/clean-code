@@ -1,5 +1,5 @@
-'use strict'
-const RULES = require('../rules');
+'use strict';
+const CONSTS = require('../consts');
 const colors = require('colors');
 const fs = require('fs');
 const _ = require('lodash');
@@ -10,11 +10,11 @@ class ClassParser {
 
 		lineReader.on('line', () => count++);
 		lineReader.on('close', () => {
-			if(count > RULES.CLASS_LINES_LENGTH){
+			if(count > CONSTS.CLASS_LINES_LENGTH){
 				console.error('\n');
 				console.error('✖ Class lines length violation'.underline.red);
 				console.error(
-					`  Found ${count} lines in file "${filePath.bold}". Recommended is ${RULES.CLASS_LINES_LENGTH}.`.underline.yellow
+					`  Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`.underline.yellow
 				);
 			}
 		})
