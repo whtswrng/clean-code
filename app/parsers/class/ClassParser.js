@@ -34,6 +34,7 @@ class ClassParser {
                     reject();
                     return console.error(`File ${filePathArgument} does not exists.`);
                 }
+
                 const classRegexp = /class \w+.\{/g;
                 const classMatches = rawFileString.match(classRegexp);
 
@@ -43,6 +44,7 @@ class ClassParser {
                     checkCorrectClassName(className);
                 });
 
+                console.log('resolving');
                 resolve();
             });
 		});
@@ -58,7 +60,7 @@ class ClassParser {
 
 		function checkCorrectClassName(className) {
 			const incorrectClassNamesRegex = /processor|Processor|Manager|manager|data|Data|info|Info/g;
-			const errorMessage = `  Wrong class name ` + `"${className.replace(/\s?{/g, '')}"`.bold +
+			const errorMessage = `Wrong class name ` + `"${className.replace(/\s?{/g, '')}"`.bold +
 				` in file "${filePathArgument.bold}". ` + 
 				`You should avoid using words in class names like ` + `Processor, Manager, Data, Info.`.bold;
 

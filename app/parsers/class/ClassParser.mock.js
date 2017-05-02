@@ -1,4 +1,4 @@
-class Foo {
+class FooProcessor {
     constructor(a, b, c, d) {
 
     }
@@ -15,6 +15,9 @@ class Foo {
 
 
 
+class SecondFail {
+
+}
 
 
 
