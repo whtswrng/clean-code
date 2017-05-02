@@ -44,7 +44,6 @@ class ClassParser {
                     checkCorrectClassName(className);
                 });
 
-                console.log('resolving');
                 resolve();
             });
 		});

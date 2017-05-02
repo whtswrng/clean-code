@@ -6,12 +6,12 @@ const PrinterAdapter = require('../../services/PrinterAdapter');
 const sinon = require('sinon');
 const assert = chai.assert;
 const path = require('path');
-
-// const Readable = require('stream').Readable;
+const Readable = require('stream').Readable;
+const Mock = require('./Mock');
 
 describe('MethodParser', function() {
 	let lineReader;
-	let fileMockPath;
+	let stream;
 
 	before(() => {
         sinon.stub(console, "error").callsFake(() => {});
@@ -22,11 +22,12 @@ describe('MethodParser', function() {
     });
 
 	beforeEach(() => {
-	    fileMockPath = path.resolve('../app/parsers/method/MethodParser.mock.js');
+		stream = new Readable();
+		stream._read = function() {};
 		sinon.spy(PrinterAdapter, 'title');
         sinon.spy(PrinterAdapter, 'warning');
         lineReader = require('readline').createInterface({
-            input: require('fs').createReadStream(fileMockPath)
+            input: stream
         });
 	});
 
@@ -37,43 +38,76 @@ describe('MethodParser', function() {
 
 	describe('parse method', () => {
 
-		it('should violate method arguments length', () => {
-            return MethodParser.parse(lineReader, 'FOO').then(() => {
-				expect(getTitleCallsArguments(0)).to.equal('Method arguments length violation');
-                expect(getWarningCallsArguments(0)).to.equal('4 arguments in method "\u001b[1mconstructor\u001b[22m" in file "\u001b[1mFOO\u001b[22m". Recommended arguments length is 3.');
-			});
+		it('should violate callback nesting problem with es6 syntax', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Callback hell');
+                expectPrinderAdapterCallsToEqual(1);
+            	done();
+            }).catch(done);
+            streamAsFile(Mock.nestedCallbacksES6);
 		});
 
-        it('should be callback hell', () => {
-            return MethodParser.parse(lineReader, 'FOO').then(() => {
-                expect(getTitleCallsArguments(1)).to.equal('Callback hell');
-                expect(getWarningCallsArguments(1)).to.equal('Method \u001b[1mgetAllFoo\u001b[22m in file \u001b[1mFOO\u001b[22m has problem with callback nesting. Consider refactoring. ');
-            });
+        it('should violate callback nesting problem with es5 syntax', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Callback hell');
+                expectPrinderAdapterCallsToEqual(1);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.nestedCallbacksES5);
         });
 
-        it('should violate method lines length', () => {
-            return MethodParser.parse(lineReader, 'FOO').then(() => {
-                expect(getTitleCallsArguments(2)).to.equal('Method lines length violation');
-                expect(getWarningCallsArguments(2)).to.equal('22 line of code in method "\u001b[1mgetAllFoo\u001b[22m" in file "\u001b[1mFOO\u001b[22m". Recommended line length is 20.');
-
-            });
+        it('should violate long lines in method', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Method lines length violation');
+                expectPrinderAdapterCallsToEqual(1);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.longMethod);
         });
 
-        it('should violate boolean as argument', () => {
-            return MethodParser.parse(lineReader, 'FOO').then(() => {
-                expect(getTitleCallsArguments(3)).to.equal('Boolean as argument problem');
-                expect(getWarningCallsArguments(3)).to.equal('Argument \u001b[1mthird\u001b[22m in method \u001b[1mgetAllFoo\u001b[22m in file \u001b[1mFOO\u001b[22m should not be passed. Functions should do only one thing.');
-            });
+        it('should violate method arguments length', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Method arguments length violation');
+                expectPrinderAdapterCallsToEqual(2);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.argumentsViolation);
         });
 
-        it('should violate method count overflow', () => {
-            return MethodParser.parse(lineReader, 'FOO').then(() => {
-                expect(getTitleCallsArguments(4)).to.equal('Method count overflow');
-                expect(getWarningCallsArguments(4)).to.equal('16 methods in file \u001b[1mFOO\u001b[22m. Recommended is less than 10');
-            });
+        it('should violate method arguments length', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Method arguments length violation');
+                expectPrinderAdapterCallsToEqual(2);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.argumentsViolation);
+        });
+
+        it('should violate boolean as argument', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Boolean as argument problem');
+                expectPrinderAdapterCallsToEqual(2);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.booleanAsArgument);
+        });
+
+        it('should violate method count overflow', (done) => {
+            MethodParser.parse(lineReader, 'FOO').then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Method count overflow');
+                expect(getWarningCallsArguments(0)).to.equal('12 methods in file \u001b[1mFOO\u001b[22m. Recommended is less than 10');
+                expectPrinderAdapterCallsToEqual(1);
+                done();
+            }).catch(done);
+            streamAsFile(Mock.methodOverFlow);
         });
 
 	});
+
+    function streamAsFile(string) {
+        stream.push(string);
+        stream.push(null);
+    }
 
 });
 
@@ -84,4 +118,9 @@ function getTitleCallsArguments(callIndex) {
 
 function getWarningCallsArguments(callIndex) {
     return PrinterAdapter.warning.getCalls()[callIndex].args[0];
+}
+
+function expectPrinderAdapterCallsToEqual(number) {
+    expect(PrinterAdapter.title.getCalls().length).to.equal(number);
+    expect(PrinterAdapter.warning.getCalls().length).to.equal(number);
 }

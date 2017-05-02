@@ -11,7 +11,7 @@ class MethodParser {
 
 		function parseMethods(lineReader){
 			return new Promise((resolve, reject) => {
-                const methodNameRegex = /((?!if|for|while|switch|function\b)\b\w+)\s?(\([a-zA-Z0-9,\s]*\))\s?\{/g;
+                const methodNameRegex = /((?!if|for|while|switch|function\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g;
                 let methodLineCount = 0;
                 let methodName = '';
                 let methodArguments = [];
@@ -36,9 +36,11 @@ class MethodParser {
                         }
                         isInMethod = true;
                         methodCount++;
+                        bracketCounter++;
                         methodName = methodNameFromRegexResult[1];
                         methodArguments = extractMethodArguments(methodNameFromRegexResult[2]);
                         checkMethodArguments(methodName, methodArguments);
+                        return;
                     }
 
                     if(isInMethod) {
@@ -55,7 +57,7 @@ class MethodParser {
                         if(isCloseCurlyBracketInLine(line)) {
                             bracketCounter--;
                             if(bracketCounter < 1) {
-                                methodLineCount = methodLineCount - 2;
+                                methodLineCount = methodLineCount - 1;
                                 finish();
                                 reset();
                             }
@@ -190,7 +192,7 @@ function isCallbackOpenLine(line) {
 }
 
 function isCallbackCloseLine(line) {
-	return line.match(/}\)/g);
+	return line.match(/}(,.*)?\)/g);
 }
 
 

@@ -1,7 +1,13 @@
 class FooProcessor {
 
     constructor(a, b, c, d) {
+        for(let i = 0; i < 4; i++){
 
+        }
+
+        function ferda() {
+            // foofofof
+        }
     }
 
     getAllFoo(){
@@ -12,11 +18,29 @@ class FooProcessor {
         })
     }
 
-    getAllFoo(){
-        // foo
+    getBarAndStuff(){
+        function foo() {
+            setTimeout(() => {
+                // fofo
+            }, 0);
+
+            setTimeout(function() {
+                // foo
+                console.log();
+                console.log();
+                for(let i = 0; i < 4; i++){
+
+                }
+                console.log();
+            });
+
+            setTimeout(function() {
+                // foo
+            }, 4444);
+        }
     }
 
-    getAllFoo(){
+    getAllFoo(){ // dont touch
         // fooo
         console.log();
         console.log();
@@ -99,210 +123,12 @@ class FooProcessor {
 }
 
 
-
 class SecondFail {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const fefefeef = () => {
+    // fofofo
+    setTimeout(() => {
+    });
+};

@@ -5,29 +5,32 @@ const PrinterAdapter = require('../../services/PrinterAdapter');
 const sinon = require('sinon');
 const assert = chai.assert;
 const path = require('path');
-// const Readable = require('stream').Readable;
+const Readable = require('stream').Readable;
+const Mock = require('./Mock');
 
 describe('ClassParser', function() {
 	let lineReader;
+	let stream;
 	let fileMockPath;
 
-	before(() => {
+    before(() => {
+        fileMockPath = path.resolve('../app/parsers/class/Mock.js');
         sinon.stub(console, "error").callsFake(() => {});
-	});
+    });
 
     after(() => {
         console.error.restore();
     });
 
-	beforeEach(() => {
-
-        fileMockPath = path.resolve('../app/parsers/class/ClassParser.mock.js');
-		sinon.spy(PrinterAdapter, 'title');
+    beforeEach(() => {
+        stream = new Readable();
+        stream._read = function() {};
+        sinon.spy(PrinterAdapter, 'title');
         sinon.spy(PrinterAdapter, 'warning');
         lineReader = require('readline').createInterface({
-            input: require('fs').createReadStream(fileMockPath)
+            input: stream
         });
-	});
+    });
 
 	afterEach(() => {
 		PrinterAdapter.title.restore();
@@ -36,33 +39,40 @@ describe('ClassParser', function() {
 
 	describe('check lines method', () => {
 
-        it('should violate class lines length', () => {
-            return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
+        it('should violate class lines length', (done) => {
+            ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
                 expect(getTitleCallsArguments(0)).to.equal('Class lines length violation');
-                expect(getWarningCallsArguments(0)).to.equal('Found 223 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
-            });
+                expect(getWarningCallsArguments(0)).to.equal('Found 351 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
+                done();
+            }).catch(done);
+            streamAsFile(Mock.classLineLength)
         });
 
     });
 
-	describe('parse method', () => {
+    describe('parse method', () => {
 
-        it('should violate class rule', () => {
-            return ClassParser.parse(fileMockPath).then(() => {
-                expect(getTitleCallsArguments(0)).to.equal('Class rule violation');
-                expect(getWarningCallsArguments(0)).to.equal('Found 2 classes definition in file "' + fileMockPath.bold +'", please consider refactoring.');
-            });
-        });
-
-        it('should violate class name rule', () => {
-            return ClassParser.parse(fileMockPath).then(() => {
+        it('should violate class name rule', (done) => {
+            ClassParser.parse(fileMockPath).then(() => {
                 expect(getTitleCallsArguments(1)).to.equal('Class name rule violation');
                 expect(getWarningCallsArguments(1)).to.equal('Wrong class name \u001b[1m"class FooProcessor"\u001b[22m in file "' + fileMockPath.bold +'". You should avoid using words in class names like \u001b[1mProcessor, Manager, Data, Info.\u001b[22m');
-            });
+                done();
+            }).catch(done);
         });
 
+        it('should violate class rule', (done) => {
+            ClassParser.parse(fileMockPath).then(() => {
+                expect(getTitleCallsArguments(0)).to.equal('Class rule violation');
+                expect(getWarningCallsArguments(0)).to.equal('Found 2 classes definition in file "' + fileMockPath.bold +'", please consider refactoring.');
+                done();
+            }).catch(done);
+        });
     });
 
+    function streamAsFile(string) {
+        stream.push(string);
+        stream.push(null);
+    }
 });
 
 
