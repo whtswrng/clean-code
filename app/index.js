@@ -13,6 +13,10 @@ if( ! pathArgument) {
 }
 
 fs.lstat(pathArgument, (err, result) => {
+	if(err) {
+		return console.error('It is not file or directory');
+	}
+
 	if(result.isDirectory()) {
 		initAsRecursive();
 	} else if (result.isFile()) {

@@ -4,6 +4,7 @@ const ClassParser = require('./ClassParser');
 const PrinterAdapter = require('../../services/PrinterAdapter');
 const sinon = require('sinon');
 const assert = chai.assert;
+const path = require('path');
 // const Readable = require('stream').Readable;
 
 describe('ClassParser', function() {
@@ -19,7 +20,8 @@ describe('ClassParser', function() {
     });
 
 	beforeEach(() => {
-	    fileMockPath = './ClassParser.mock.js';
+
+        fileMockPath = path.resolve('../app/parsers/class/ClassParser.mock.js');
 		sinon.spy(PrinterAdapter, 'title');
         sinon.spy(PrinterAdapter, 'warning');
         lineReader = require('readline').createInterface({
@@ -45,17 +47,17 @@ describe('ClassParser', function() {
 
 	describe('parse method', () => {
 
-        it('should violate class rule something nice', () => {
+        it('should violate class rule', () => {
             return ClassParser.parse(fileMockPath).then(() => {
                 expect(getTitleCallsArguments(0)).to.equal('Class rule violation');
-                expect(getWarningCallsArguments(0)).to.equal('Found 2 classes definition in file "\u001b[1m./ClassParser.mock.js\u001b[22m", please consider refactoring.');
+                expect(getWarningCallsArguments(0)).to.equal('Found 2 classes definition in file "' + fileMockPath.bold +'", please consider refactoring.');
             });
         });
 
         it('should violate class name rule', () => {
             return ClassParser.parse(fileMockPath).then(() => {
                 expect(getTitleCallsArguments(1)).to.equal('Class name rule violation');
-                expect(getWarningCallsArguments(1)).to.equal('Wrong class name \u001b[1m"class FooProcessor"\u001b[22m in file "\u001b[1m./ClassParser.mock.js\u001b[22m". You should avoid using words in class names like \u001b[1mProcessor, Manager, Data, Info.\u001b[22m');
+                expect(getWarningCallsArguments(1)).to.equal('Wrong class name \u001b[1m"class FooProcessor"\u001b[22m in file "' + fileMockPath.bold +'". You should avoid using words in class names like \u001b[1mProcessor, Manager, Data, Info.\u001b[22m');
             });
         });
 
