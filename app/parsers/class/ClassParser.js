@@ -25,22 +25,26 @@ class ClassParser {
                 resolve();
             })
 		});
-
 	}
 
 	static parse(filePathArgument) {
-		fs.readFile(filePathArgument, 'UTF-8', (err, rawFileString) => {
-			if(err) {
-				return console.error(`File ${filePathArgument} does not exists.`);
-			}
-			const classRegexp = /class \w+.\{/g;
-			const classMatches = rawFileString.match(classRegexp);
+		return new Promise((resolve, reject) => {
+            fs.readFile(filePathArgument, 'UTF-8', (err, rawFileString) => {
+                if(err) {
+                    reject();
+                    return console.error(`File ${filePathArgument} does not exists.`);
+                }
+                const classRegexp = /class \w+.\{/g;
+                const classMatches = rawFileString.match(classRegexp);
 
-			checkClassDefinitionsMoreThanOne(classMatches);
+                checkClassDefinitionsMoreThanOne(classMatches);
 
-			_.each(classMatches, (className) => {
-				checkCorrectClassName(className);
-			});
+                _.each(classMatches, (className) => {
+                    checkCorrectClassName(className);
+                });
+
+                resolve();
+            });
 		});
 
 		function checkClassDefinitionsMoreThanOne(classMatches) {

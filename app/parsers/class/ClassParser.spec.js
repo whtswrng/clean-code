@@ -30,19 +30,29 @@ describe('ClassParser', function() {
         PrinterAdapter.warning.restore();
 	});
 
-    it('should violate class lines length', () => {
-		return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
-			expect(getTitleCallArguments()).to.equal('Class lines length violation');
-			expect(getWarningCallArguments()).to.equal('Found 220 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
-		});
-	});
+	describe('check lines method', () => {
 
-    it('should violate class lines length', () => {
-        return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
-            expect(getTitleCallArguments()).to.equal('Class lines length violation');
-            expect(getWarningCallArguments()).to.equal('Found 220 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
+        it('should violate class lines length', () => {
+            return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
+                expect(getTitleCallArguments()).to.equal('Class lines length violation');
+                expect(getWarningCallArguments()).to.equal('Found 220 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
+            });
         });
+
     });
+
+	describe('parse method', () => {
+
+        it('should violate class lines length', () => {
+            return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
+                expect(getTitleCallArguments()).to.equal('Class lines length violation');
+                expect(getWarningCallArguments()).to.equal('Found 220 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
+            });
+        });
+
+    });
+
+
 
 });
 
