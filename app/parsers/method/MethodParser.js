@@ -11,7 +11,7 @@ class MethodParser {
 
 		function parseMethods(lineReader){
 			return new Promise((resolve, reject) => {
-                const methodNameRegex = /((?!if|for|while|switch|function\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g;
+                const methodNameRegex = /((?!if|for|while|switch\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g;
                 let methodLineCount = 0;
                 let methodName = '';
                 let methodArguments = [];
@@ -29,17 +29,19 @@ class MethodParser {
                 function parseLine(line) {
                     const methodNameFromRegexResult = methodNameRegex.exec(line);
 
-                    if(methodNameFromRegexResult) {
-                        if( ! isCallbackOpenLine(line) && isInMethod) {
+                    if((methodNameFromRegexResult || isAnonymousArrowFunctionLine(line)) && ( ! isInMethod || ! isCallbackLine(line))) {
+                        if( ! isCallbackLine(line) && isInMethod) {
                             finish();
                             reset();
                         }
                         isInMethod = true;
                         methodCount++;
                         bracketCounter++;
-                        methodName = methodNameFromRegexResult[1];
-                        methodArguments = extractMethodArguments(methodNameFromRegexResult[2]);
-                        checkMethodArguments(methodName, methodArguments);
+                        if(methodNameFromRegexResult) {
+                            methodName = methodNameFromRegexResult[1] || 'function';
+                            methodArguments = extractMethodArguments(methodNameFromRegexResult[2]);
+                            checkMethodArguments(methodName, methodArguments);
+                        }
                         return;
                     }
 
@@ -81,7 +83,7 @@ class MethodParser {
                 }
 
                 function countCallbackNesting(line) {
-                    if(isCallbackOpenLine(line)){
+                    if(isCallbackLine(line)){
                         if(isInCallback) {
                             callbackNestingLines.push(line);
                             callbackNesting++;
@@ -193,6 +195,14 @@ function isCallbackOpenLine(line) {
 
 function isCallbackCloseLine(line) {
 	return line.match(/}(,.*)?\)/g);
+}
+
+function isAnonymousArrowFunctionLine(line) {
+    return line.match(/(\([a-zA-Z0-9,\s]*\))\s?(=>){1}\s?\{/g);
+}
+
+function isCallbackLine(line) {
+    return line.match(/.+(\({1}|,)\s?.*(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g);
 }
 
 
