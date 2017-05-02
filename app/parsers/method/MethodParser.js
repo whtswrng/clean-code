@@ -1,6 +1,7 @@
 'use strict';
-const CONSTS = require('../consts');
+const CONSTS = require('../../consts');
 const _ = require('lodash');
+const PrinterAdapter = require('../../services/PrinterAdapter');
 
 class MethodParser {
 
@@ -69,9 +70,8 @@ class MethodParser {
 						`Functions should do only one thing.`;
 
 					if(line.match(regex)) {
-						console.error('\n');
-						console.error(`✖ Boolean as argument problem`.underline.red);
-						console.error(errorMessage.underline.yellow)
+						PrinterAdapter.title(`Boolean as argument problem`);
+						PrinterAdapter.warning(errorMessage)
 							
 					}
 				});
@@ -105,58 +105,57 @@ class MethodParser {
 				callbackNesting++;
 				checkMethodLinesLength(methodName, methodLineCount);
 				checkCallbackNesting(methodName, callbackNesting, callbackNestingLines);
-				// console.log('Method Sucessfully parsed!');
-				// console.log('Method name: ', methodName, 'Lines: ', methodLineCount);	
+				// PrinterAdapter.log('Method Sucessfully parsed!');
+				// PrinterAdapter.log('Method name: ', methodName, 'Lines: ', methodLineCount);
 			}
 		}
 
 		function checkMethodCount(methodCount) {
 			if(methodCount > CONSTS.MAX_RECOMMENDED_METHODS) {
-				console.error('\n');
-				console.error(`✖ Method count overflow`.underline.yellow);
-				console.error(`  ${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`.underline.yellow);
+				PrinterAdapter.title(`Method count overflow`);
+				PrinterAdapter.warning(
+					`${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`
+				);
 			} else if (methodCount > CONSTS.MAX_METHODS) {
-				console.error('\n');
-				console.error(`✖ Method count overflow`.underline.red);
-				console.error(`  ${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`.underline.yellow);
+				PrinterAdapter.title(`Method count overflow`);
+				PrinterAdapter.warning(
+					`${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`
+				);
 			}
 		}
 
 		function checkMethodArguments(methodName, methodArguments) {
-			const errorMessage = `  ${methodArguments.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` + 
+			const errorMessage = `${methodArguments.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` +
 				`Recommended arguments length is ${CONSTS.ARGUMENTS_LENGTH}.`;
 
 			if(methodArguments.length > CONSTS.ARGUMENTS_LENGTH) {
-				console.error('\n');
-				console.error(`✖ Method arguments length violation`.underline.red);
-				console.error(errorMessage.underline.yellow);
+				PrinterAdapter.title(`Method arguments length violation`);
+				PrinterAdapter.warning(errorMessage);
 			}
 		}
 
 		function checkCallbackNesting(methodName, callbackNesting, callbackNestingLines) {
-			const errorMessage = `  Method ${methodName.bold} in file ${filePath.bold} has problem with callback nesting. ` +
+			const errorMessage = `Method ${methodName.bold} in file ${filePath.bold} has problem with callback nesting. ` +
 					`Consider refactoring. `;
 
 			if(callbackNesting > CONSTS.MAX_CALLBACK_NESTING_COUNT) {
-				console.error('\n');
-				console.error(`✖ Callback hell`.underline.red);
-				console.error(errorMessage.underline.yellow);
-				console.error('Lines: '.underline.red);
+				PrinterAdapter.title(`Callback hell`);
+				PrinterAdapter.warning(errorMessage);
+				PrinterAdapter.error('Lines: ');
 				_.each(callbackNestingLines, (line) => {
-					console.error(line.underline.red);
+					PrinterAdapter.error(line);
 				})
 			}
 		}
 
 
 		function checkMethodLinesLength(methodName, methodLineCount) {
-			const errorMessage = `  ${methodLineCount} line of code in method "${methodName.bold}" in file "${filePath.bold}". ` + 
+			const errorMessage = `${methodLineCount} line of code in method "${methodName.bold}" in file "${filePath.bold}". ` +
 				`Recommended line length is ${CONSTS.METHOD_LINES_LENGTH}.`;
 
 			if(methodLineCount > CONSTS.METHOD_LINES_LENGTH) {
-				console.error('\n');
-				console.error(`✖ Method lines length violation`.underline.red);
-				console.error(errorMessage.underline.yellow);
+				PrinterAdapter.title(`Method lines length violation`);
+				PrinterAdapter.warning(errorMessage);
 			}
 		}
 

@@ -3,8 +3,8 @@ const fs = require('fs');
 const colors = require('colors');
 const pathArgument = process.argv[2];
 const CONSTS = require('./consts');
-const MethodParser = require('./parsers/MethodParser');
-const ClassParser = require('./parsers/ClassParser');
+const MethodParser = require('./parsers/method/MethodParser');
+const ClassParser = require('./parsers/class/ClassParser');
 const recursive = require('recursive-readdir');
 const _ = require('lodash');
 
