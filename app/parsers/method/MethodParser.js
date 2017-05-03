@@ -11,7 +11,7 @@ class MethodParser {
 
 		function parseMethods(lineReader){
 			return new Promise((resolve, reject) => {
-                const methodNameRegex = /((?!if|for|while|switch\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g;
+                const methodNameRegex = /((?!if|for|while|switch\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,:\s]*\))\s?(=>)?\s?\{/g;
                 let methodLineCount = 0;
                 let methodName = '';
                 let methodArguments = [];
