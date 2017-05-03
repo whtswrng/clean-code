@@ -15,7 +15,7 @@ CLI have dependencies that require Node 6.9.0 or higher.
 * [Installation](#installation)
 * [Usage](#usage)
 * [Configuration](#configuration)
-* [Design and rules implementation](#design and rules implementation)
+* [Design implementation](#design)
 * [Documentation](#documentation)
 * [License](#license)
 
@@ -31,14 +31,23 @@ You can put JSON file as second argument with this setup.
 
 ```
 {
-    "include": [".ts"],
-    "exclude": ["spec.ts", ".d.ts"]
+    "include": [".ts"],  // check design in this files
+    "exclude": [".spec.ts", ".d.ts"] // do not check design in this files
 }
 ```
 
-## Design and rules implementation
+## Design
 
-TODO
+This tool can provide protection from these "clean code" rules and common javascript problems.
+
+- Callback hell (nesting problem)
+- Method arguments violation
+- Method lines violation (keep it small)
+- Class name violation
+- Class length violation (keep it even smaller)
+- Class methods count violation
+- Boolean as argument violation
+- ...
 
 ## Usage
 
