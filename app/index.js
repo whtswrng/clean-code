@@ -54,7 +54,7 @@ function initAsRecursive() {
 			if(hasFilePathCorrectExtension(filePath)){
 				initAsFile(filePath);
 			} else {
-				console.log('skipping> ', filePath);
+				// console.log('skipping> ', filePath);
 			}
 		});
 	});
