@@ -202,7 +202,15 @@ function isAnonymousArrowFunctionLine(line) {
 }
 
 function isCallbackLine(line) {
-    return line.match(/.+(\({1}|,)\s?.*(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g);
+    return isMatchingCallbackAndArrowFunctions() || isMatchingArrowFunctionsWithoutBrackets();
+
+    function isMatchingCallbackAndArrowFunctions() {
+        return line.match(/.+(\({1}|,)\s?.*(\([a-zA-Z0-9,\s]*\))\s?(=>)?\s?\{/g);
+    }
+
+    function isMatchingArrowFunctionsWithoutBrackets() {
+        return line.match(/.+(\({1}|,)\s?.*([a-zA-Z0-9,\s]*)\s?(=>){1}\s?\{/g);
+    }
 }
 
 

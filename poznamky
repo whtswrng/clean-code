@@ -3,6 +3,8 @@ DONE - callback hell etc...
 DONE - boolean vstup? if, else vetev
 IN PROGRESS - project jako vstup pro process
 self invocation function
-ES 5 + ES6 support!
+ES 5 + ES6 support, TS!
 
 debuging and unit testing
+
+(), err => { taky funkce
