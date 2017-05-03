@@ -1,14 +1,13 @@
 {
-  "name": "cleanit",
+  "name": "cleancode",
   "version": "1.0.0",
   "description": "",
   "main": "./app/index.js",
   "scripts": {
-    "app": "node app/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "app": "node app/index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "whtswrng",
+  "license": "MIT",
   "dependencies": {
     "chai": "^3.5.0",
     "colors": "^1.1.2",
