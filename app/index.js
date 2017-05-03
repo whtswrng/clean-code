@@ -11,7 +11,7 @@ const _ = require('lodash');
 let CONFIG = null;
 
 if( ! pathArgument) {
-    return console.error('You must put file path as first argument.'.underline.yellow)
+    return console.error('You must put file path as first argument.')
 }
 
 readConfigFileAndParseToJson(configPathArgument)
@@ -32,7 +32,6 @@ function initAll() {
         }
     });
 }
-
 
 function initAsFile(pathArgument){
 	const lineReader = require('readline').createInterface({
@@ -88,7 +87,6 @@ function isExcludedFileExtension(filePath) {
 }
 
 function readConfigFileAndParseToJson(filePath) {
-
     return new Promise(promisified);
 
     function promisified(resolve, reject) {

@@ -6,6 +6,9 @@
   "scripts": {
     "app": "node app/index.js"
   },
+  "bin": {
+    "cleancode": "./bin/index.js"
+  },
   "author": "whtswrng",
   "license": "MIT",
   "dependencies": {
