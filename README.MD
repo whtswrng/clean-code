@@ -14,6 +14,7 @@ CLI have dependencies that require Node 6.9.0 or higher.
 
 * [Installation](#installation)
 * [Usage](#usage)
+* [Configuration](#configuration)
 * [Design and rules implementation](#design and rules implementation)
 * [Documentation](#documentation)
 * [License](#license)
@@ -22,6 +23,17 @@ CLI have dependencies that require Node 6.9.0 or higher.
 
 ```bash
 npm install -g cleancode 
+```
+
+## Configuration 
+
+You can put JSON file as second argument with this setup.
+
+```
+{
+    "include": [".ts"],
+    "exclude": ["spec.ts", ".d.ts"]
+}
 ```
 
 ## Design and rules implementation
