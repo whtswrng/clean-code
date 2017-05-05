@@ -7,168 +7,178 @@ const PrinterAdapter = require('../../services/PrinterAdapter');
 class MethodParser {
 
 	static parse(lineReader, filePath) {
-		return parseMethods(lineReader);
+        return new Promise((resolve, reject) => {
+            const methodNameRegex = /((?!if|for|while|switch\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,:\s]*\))\s?(=>)?\s?\{/g;
+            let methodLineCount = 0;
+            let methodName = '';
+            let methodArguments = [];
+            let methodCount = 0;
+            let callbackNesting = 0;
+            let isInCallback = false;
+            let isInMethod = false;
+            let bracketCounter = 0;
+            let callbackNestingLines = [];
 
-		function parseMethods(lineReader){
-			return new Promise((resolve, reject) => {
-                const methodNameRegex = /((?!if|for|while|switch\b)\b\w+\s?=?)\s?(\([a-zA-Z0-9,:\s]*\))\s?(=>)?\s?\{/g;
-                let methodLineCount = 0;
-                let methodName = '';
-                let methodArguments = [];
-                let methodCount = 0;
-                let callbackNesting = 0;
-                let isInCallback = false;
-                let isInMethod = false;
-                let bracketCounter = 0;
-                let callbackNestingLines = [];
+            lineReader.on('line', parseLine);
+            lineReader.on('close', close);
+            lineReader.on('error', reject);
 
-                lineReader.on('line', parseLine);
-                lineReader.on('close', () => checkMethodCount(methodCount));
-                lineReader.on('error', reject);
+            function close() {
+                checkMethodCount(methodCount);
+                resolve();
+            }
 
-                function parseLine(line) {
-                    const methodNameFromRegexResult = methodNameRegex.exec(line);
+            function parseLine(line) {
+                const methodNameFromRegexResult = methodNameRegex.exec(line);
 
-                    if((methodNameFromRegexResult || isAnonymousArrowFunctionLine(line)) && ( ! isInMethod || ! isCallbackLine(line))) {
-                        if( ! isCallbackLine(line) && isInMethod) {
-                            finish();
-                            reset();
-                        }
-                        isInMethod = true;
-                        methodCount++;
-                        bracketCounter++;
-                        if(methodNameFromRegexResult) {
-                            methodName = methodNameFromRegexResult[1] || 'function';
-                            methodArguments = extractMethodArguments(methodNameFromRegexResult[2]);
-                            checkMethodArguments(methodName, methodArguments);
-                        }
-                        return;
-                    }
+                if(isProperMethodHeadAndIsNotInFunctionOrCallback(methodNameFromRegexResult, line)) {
+                    parseMethodHead(methodNameFromRegexResult, line);
+                } else if (isInMethod) {
+                    parseMethodBody( line);
+                }
+            }
 
-                    if(isInMethod) {
-                        countCallbackNesting(line);
-                        methodLineCount++;
-                        if(isThereIfStatement(line)){
-                            checkForArgumentsInIfStatement(line);
-                        }
+            function isProperMethodHeadAndIsNotInFunctionOrCallback(methodDefinition, line) {
+                return (methodDefinition || isAnonymousArrowFunctionLine(line))
+                    && ( ! isInMethod || ! isCallbackLine(line));
+            }
 
-                        if(isOpenCurlyBracketInLine(line)) {
-                            bracketCounter++;
-                        }
-
-                        if(isCloseCurlyBracketInLine(line)) {
-                            bracketCounter--;
-                            if(bracketCounter < 1) {
-                                methodLineCount = methodLineCount - 1;
-                                finish();
-                                reset();
-                            }
-                        }
-                    }
+            function parseMethodHead(methodDefinition, line) {
+                if( ! isCallbackLine(line) && isInMethod) {
+                    finish();
+                    reset();
                 }
 
+                isInMethod = true;
+                methodCount++;
+                bracketCounter++;
 
-                function checkForArgumentsInIfStatement(line) {
-                    _.each(methodArguments, (argument) => {
-                        const regex = new RegExp(`if\\s?\\(${argument}\\)`, 'g');
-                        const errorMessage = `Argument ${argument.bold} in method ${methodName.bold} in file ${filePath.bold} should not be passed. ` +
-                            `Functions should do only one thing.`;
+                if(methodDefinition) {
+                    methodName = methodDefinition[1] || 'function';
+                    methodArguments = extractMethodArguments(methodDefinition[2]);
+                    checkMethodArguments(methodName, methodArguments);
+                }
+            }
 
-                        if(line.match(regex)) {
-                            PrinterAdapter.title(`Boolean as argument problem`);
-                            PrinterAdapter.warning(errorMessage)
+            function parseMethodBody(line) {
+                countCallbackNesting(line);
+                methodLineCount++;
 
-                        }
-                    });
+                if(isThereIfStatement(line)){
+                    checkForArgumentsInIfStatement(line);
                 }
 
-                function countCallbackNesting(line) {
-                    if(isCallbackLine(line)){
-                        if(isInCallback) {
-                            callbackNestingLines.push(line);
-                            callbackNesting++;
-                        }
-                        isInCallback = true;
-                    }
-
-                    if(isCallbackCloseLine(line)) {
-                        isInCallback = false;
-                    }
+                if(isOpenCurlyBracketInLine(line)) {
+                    bracketCounter++;
                 }
 
-                function reset() {
-                    isInMethod = false;
-                    callbackNestingLines = [];
-                    callbackNesting = 0;
+                if(isCloseCurlyBracketInLine(line)) {
+                    bracketCounter--;
+                    if(bracketCounter < 1) {
+                        methodLineCount = methodLineCount - 1;
+                        finish();
+                        reset();
+                    }
+                }
+            }
+
+            function checkForArgumentsInIfStatement(line) {
+                _.each(methodArguments, (argument) => {
+                    const regex = new RegExp(`if\\s?\\(${argument}\\)`, 'g');
+                    const errorMessage = `Argument ${argument.bold} in method ${methodName.bold} in file ${filePath.bold} should not be passed. ` +
+                        `Functions should do only one thing.`;
+
+                    if(line.match(regex)) {
+                        PrinterAdapter.title(`Boolean as argument problem`);
+                        PrinterAdapter.warning(errorMessage)
+
+                    }
+                });
+            }
+
+            function countCallbackNesting(line) {
+                if(isCallbackLine(line)){
+                    if(isInCallback) {
+                        callbackNestingLines.push(line);
+                        callbackNesting++;
+                    }
+                    isInCallback = true;
+                }
+
+                if(isCallbackCloseLine(line)) {
                     isInCallback = false;
-                    bracketCounter = 0;
-                    methodName = '';
-                    methodLineCount = 0;
                 }
+            }
 
-                function finish() {
-                    callbackNesting++;
-                    checkMethodLinesLength(methodName, methodLineCount);
-                    checkCallbackNesting(methodName, callbackNesting, callbackNestingLines);
-                    // PrinterAdapter.log('Method Sucessfully parsed!');
-                    // PrinterAdapter.log('Method name: ', methodName, 'Lines: ', methodLineCount);
+            function reset() {
+                isInMethod = false;
+                callbackNestingLines = [];
+                callbackNesting = 0;
+                isInCallback = false;
+                bracketCounter = 0;
+                methodName = '';
+                methodLineCount = 0;
+            }
+
+            function finish() {
+                callbackNesting++;
+                checkMethodLinesLength(methodName, methodLineCount);
+                checkCallbackNesting(methodName, callbackNesting, callbackNestingLines);
+                // PrinterAdapter.log('Method Sucessfully parsed!');
+                // PrinterAdapter.log('Method name: ', methodName, 'Lines: ', methodLineCount);
+            }
+
+            function checkMethodCount(methodCount) {
+                if(methodCount > CONSTS.MAX_RECOMMENDED_METHODS) {
+                    PrinterAdapter.title(`Method count overflow`);
+                    PrinterAdapter.warning(
+                        `${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`
+                    );
+                } else if (methodCount > CONSTS.MAX_METHODS) {
+                    PrinterAdapter.title(`Method count overflow`);
+                    PrinterAdapter.warning(
+                        `${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`
+                    );
                 }
+            }
 
-                function checkMethodCount(methodCount) {
-                    if(methodCount > CONSTS.MAX_RECOMMENDED_METHODS) {
-                        PrinterAdapter.title(`Method count overflow`);
-                        PrinterAdapter.warning(
-                            `${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`
-                        );
-                    } else if (methodCount > CONSTS.MAX_METHODS) {
-                        PrinterAdapter.title(`Method count overflow`);
-                        PrinterAdapter.warning(
-                            `${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`
-                        );
-                    }
-                    resolve();
+            function checkMethodArguments(methodName, methodArguments) {
+                const errorMessage = `${methodArguments.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` +
+                    `Recommended arguments length is ${CONSTS.ARGUMENTS_LENGTH}.`;
+
+                if(methodArguments.length > CONSTS.ARGUMENTS_LENGTH) {
+                    PrinterAdapter.title(`Method arguments length violation`);
+                    PrinterAdapter.warning(errorMessage);
                 }
+            }
 
-                function checkMethodArguments(methodName, methodArguments) {
-                    const errorMessage = `${methodArguments.length} arguments in method "${methodName.bold}" in file "${filePath.bold}". ` +
-                        `Recommended arguments length is ${CONSTS.ARGUMENTS_LENGTH}.`;
+            function checkCallbackNesting(methodName, callbackNesting, callbackNestingLines) {
+                const errorMessage = `Method ${methodName.bold} in file ${filePath.bold} has problem with callback nesting. ` +
+                    `Consider refactoring. `;
 
-                    if(methodArguments.length > CONSTS.ARGUMENTS_LENGTH) {
-                        PrinterAdapter.title(`Method arguments length violation`);
-                        PrinterAdapter.warning(errorMessage);
-                    }
+                if(callbackNesting > CONSTS.MAX_CALLBACK_NESTING_COUNT) {
+                    PrinterAdapter.title(`Callback hell`);
+                    PrinterAdapter.warning(errorMessage);
+                    PrinterAdapter.error('Lines: ');
+                    _.each(callbackNestingLines, (line) => {
+                        PrinterAdapter.error(line);
+                    })
                 }
+            }
 
-                function checkCallbackNesting(methodName, callbackNesting, callbackNestingLines) {
-                    const errorMessage = `Method ${methodName.bold} in file ${filePath.bold} has problem with callback nesting. ` +
-                        `Consider refactoring. `;
 
-                    if(callbackNesting > CONSTS.MAX_CALLBACK_NESTING_COUNT) {
-                        PrinterAdapter.title(`Callback hell`);
-                        PrinterAdapter.warning(errorMessage);
-                        PrinterAdapter.error('Lines: ');
-                        _.each(callbackNestingLines, (line) => {
-                            PrinterAdapter.error(line);
-                        })
-                    }
+            function checkMethodLinesLength(methodName, methodLineCount) {
+                const errorMessage = `${methodLineCount} line of code in method "${methodName.bold}" in file "${filePath.bold}". ` +
+                    `Recommended line length is ${CONSTS.METHOD_LINES_LENGTH}.`;
+
+                if(methodLineCount > CONSTS.METHOD_LINES_LENGTH) {
+                    PrinterAdapter.title(`Method lines length violation`);
+                    PrinterAdapter.warning(errorMessage);
                 }
+            }
 
-
-                function checkMethodLinesLength(methodName, methodLineCount) {
-                    const errorMessage = `${methodLineCount} line of code in method "${methodName.bold}" in file "${filePath.bold}". ` +
-                        `Recommended line length is ${CONSTS.METHOD_LINES_LENGTH}.`;
-
-                    if(methodLineCount > CONSTS.METHOD_LINES_LENGTH) {
-                        PrinterAdapter.title(`Method lines length violation`);
-                        PrinterAdapter.warning(errorMessage);
-                    }
-                }
-
-			});
-		}
-
-
-	}
+        });
+    }
 
 }
 

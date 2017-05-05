@@ -13,10 +13,12 @@ class ClassParser {
 	    return new Promise((resolve, reject) => {
             lineReader.on('error', reject);
             lineReader.on('line', () => count++);
-            lineReader.on('close', () => {
-            	finishCountingLinesLength();
-				resolve();
-            });
+            lineReader.on('close', finish);
+
+            function finish() {
+                finishCountingLinesLength();
+                resolve();
+            }
 		});
 
         function finishCountingLinesLength() {
