@@ -16,75 +16,8 @@ if( ! pathArgument) {
 
 readConfigFileAndParseToJson(configPathArgument)
     .then((json) => CONFIG = json)
-    .then(initAll)
-    .catch(initAll);
-
-function initAll() {
-    fs.lstat(pathArgument, (err, result) => {
-        if(err) {
-            return console.error('It is not file or directory');
-        }
-
-        if(result.isDirectory()) {
-            initAsRecursive();
-        } else if (result.isFile()) {
-            initAsFile(pathArgument);
-        }
-    });
-}
-
-function initAsFile(pathArgument){
-	const lineReader = require('readline').createInterface({
-		input: require('fs').createReadStream(pathArgument)
-	});
-
-	ClassParser.checkLines(lineReader, pathArgument);
-	MethodParser.parse(lineReader, pathArgument);
-	ClassParser.parse(pathArgument);
-}
-
-function initAsRecursive() {
-	recursive(pathArgument, (err, files) => {
-		if(err){
-			return console.error('Cannot read given path as directory');
-		}
-
-		_.each(files, (filePath) => {
-			if(hasFilePathCorrectExtension(filePath)){
-				initAsFile(filePath);
-			} else {
-				// console.log('skipping> ', filePath);
-			}
-		});
-	});
-}
-
-function hasFilePathCorrectExtension(filePath) {
-    const extensions = _.get(CONFIG, 'include', CONSTS.DEFAULT_FILE_INCLUDED_EXTENSIONS);
-	let isCorrect = false;
-
-	_.each(extensions, (extension) => {
-		if(filePath.indexOf(extension) !== -1 && ! isExcludedFileExtension(filePath)) {
-			isCorrect = true;
-		}
-	});
-
-	return isCorrect;
-}
-
-
-function isExcludedFileExtension(filePath) {
-    const excludedExtensions = _.get(CONFIG, 'exclude', CONSTS.DEFAULT_FILE_EXCLUDED_EXTENSIONS);
-    let isExcluded = false;
-
-	_.each(excludedExtensions, (extension) => {
-		if(filePath.indexOf(extension) !== -1) {
-			isExcluded = true;
-		}
-	});
-
-    return isExcluded;
-}
+    .then(startJourney)
+    .catch(startJourney);
 
 function readConfigFileAndParseToJson(filePath) {
     return new Promise(promisified);
@@ -98,4 +31,81 @@ function readConfigFileAndParseToJson(filePath) {
             return resolve(JSON.parse(data));
         });
     }
+}
+
+function startJourney() {
+    fs.lstat(pathArgument, (err, result) => {
+        if(err) {
+            return console.error('It is not file or directory');
+        }
+
+        if(result.isDirectory()) {
+            parseRecursiveFolder();
+        } else if (result.isFile()) {
+            parseFile(pathArgument);
+        }
+    });
+}
+
+function parseFile(pathArgument){
+	const lineReader = require('readline').createInterface({
+		input: require('fs').createReadStream(pathArgument)
+	});
+	const promiseList = [
+	    ClassParser.assertLinesLength(lineReader, pathArgument),
+        MethodParser.parse(lineReader, pathArgument),
+        ClassParser.parse(lineReader, pathArgument)
+    ];
+
+    return Promise.all(promiseList);
+}
+
+function parseRecursiveFolder() {
+	recursive(pathArgument, (err, files) => {
+		if(err){
+			return console.error('Cannot read given path as directory');
+		}
+
+		const promiseList = _.map(files, processFile);
+		Promise.all(promiseList).then(finishProcessing);
+	});
+}
+
+function processFile(filePath) {
+    if(hasFilePathCorrectExtension(filePath)){
+        return parseFile(filePath);
+    } else {
+        return Promise.resolve();
+        // console.log('skipping> ', filePath);
+    }
+}
+
+function hasFilePathCorrectExtension(filePath) {
+    const extensions = _.get(CONFIG, 'include', CONSTS.DEFAULT_FILE_INCLUDED_EXTENSIONS);
+    let isCorrect = false;
+
+    _.each(extensions, (extension) => {
+        if(filePath.indexOf(extension) !== -1 && ! isExcludedFileExtension(filePath)) {
+            isCorrect = true;
+        }
+    });
+
+    return isCorrect;
+}
+
+function isExcludedFileExtension(filePath) {
+    const excludedExtensions = _.get(CONFIG, 'exclude', CONSTS.DEFAULT_FILE_EXCLUDED_EXTENSIONS);
+    let isExcluded = false;
+
+    _.each(excludedExtensions, (extension) => {
+        if(filePath.indexOf(extension) !== -1) {
+            isExcluded = true;
+        }
+    });
+
+    return isExcluded;
+}
+
+function finishProcessing() {
+    console.log('FINIIIIIIIIISH'.green);
 }

@@ -23,8 +23,8 @@ class MethodParser {
                 let callbackNestingLines = [];
 
                 lineReader.on('line', parseLine);
-
                 lineReader.on('close', () => checkMethodCount(methodCount));
+                lineReader.on('error', reject);
 
                 function parseLine(line) {
                     const methodNameFromRegexResult = methodNameRegex.exec(line);

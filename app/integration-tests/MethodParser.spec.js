@@ -22,7 +22,7 @@ describe('MethodParser', function() {
     });
 
 	beforeEach(() => {
-	    fileMockPath = path.resolve('../app/integration-tests/MethodParser.mock.js');
+	    fileMockPath = path.resolve('app/integration-tests/MethodParser.mock.js');
 		sinon.spy(PrinterAdapter, 'title');
         sinon.spy(PrinterAdapter, 'warning');
         lineReader = require('readline').createInterface({

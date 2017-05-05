@@ -6,30 +6,34 @@ const _ = require('lodash');
 const PrinterAdapter = require('../../services/PrinterAdapter');
 
 class ClassParser {
-	static checkLines(lineReader, filePath) {
-	    return new Promise((resolve, reject) => {
-            let count = 0;
 
-            lineReader.on('error', (err) => {
-                lineReader.close();
-                reject(err);
-            });
+	static assertLinesLength(lineReader, filePath) {
+        let count = 0;
+
+	    return new Promise((resolve, reject) => {
+            lineReader.on('error', reject);
             lineReader.on('line', () => count++);
             lineReader.on('close', () => {
-                if(count > CONSTS.CLASS_LINES_LENGTH){
-                    PrinterAdapter.title('Class lines length violation');
-                    PrinterAdapter.warning(
-                        `Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`
-                    );
-                }
-                resolve();
-            })
+            	finishCountingLinesLength();
+				resolve();
+            });
 		});
+
+        function finishCountingLinesLength() {
+            if(count > CONSTS.CLASS_LINES_LENGTH){
+                PrinterAdapter.title('Class lines length violation');
+                PrinterAdapter.warning(
+                    `Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`
+                );
+            }
+        }
 	}
 
 	static parse(filePathArgument) {
 		return new Promise((resolve, reject) => {
-            fs.readFile(filePathArgument, 'UTF-8', (err, rawFileString) => {
+            fs.readFile(filePathArgument, 'UTF-8', parseFile);
+
+            function parseFile(err, rawFileString) {
                 if(err) {
                     reject();
                     return console.error(`File ${filePathArgument} does not exists.`);
@@ -40,13 +44,11 @@ class ClassParser {
 
                 checkClassDefinitionsMoreThanOne(classMatches);
 
-                _.each(classMatches, (className) => {
-                    checkCorrectClassName(className);
-                });
+                _.each(classMatches, checkCorrectClassName);
 
                 resolve();
-            });
-		});
+            }
+        });
 
 		function checkClassDefinitionsMoreThanOne(classMatches) {
 			if(classMatches && classMatches.length > 1){

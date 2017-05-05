@@ -21,7 +21,7 @@ describe('ClassParser', function() {
 
 	beforeEach(() => {
 
-        fileMockPath = path.resolve('../app/integration-tests/ClassParser.mock.js');
+        fileMockPath = path.resolve('app/integration-tests/ClassParser.mock.js');
 		sinon.spy(PrinterAdapter, 'title');
         sinon.spy(PrinterAdapter, 'warning');
         lineReader = require('readline').createInterface({
@@ -37,7 +37,7 @@ describe('ClassParser', function() {
 	describe('check lines method', () => {
 
         it('should violate class lines length', () => {
-            return ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
+            return ClassParser.assertLinesLength(lineReader, 'FOO.js').then(() => {
                 expect(getTitleCallsArguments(0)).to.equal('Class lines length violation');
                 expect(getWarningCallsArguments(0)).to.equal('Found 223 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
             });

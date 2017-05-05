@@ -40,7 +40,7 @@ describe('ClassParser', function() {
 	describe('check lines method', () => {
 
         it('should violate class lines length', (done) => {
-            ClassParser.checkLines(lineReader, 'FOO.js').then(() => {
+            ClassParser.assertLinesLength(lineReader, 'FOO.js').then(() => {
                 expect(getTitleCallsArguments(0)).to.equal('Class lines length violation');
                 expect(getWarningCallsArguments(0)).to.equal('Found 351 lines in file "\u001b[1mFOO.js\u001b[22m". Recommended is 200.');
                 done();
