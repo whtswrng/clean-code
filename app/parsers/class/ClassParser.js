@@ -4,6 +4,7 @@ const colors = require('colors');
 const fs = require('fs');
 const _ = require('lodash');
 const PrinterAdapter = require('../../services/PrinterAdapter');
+const Counter = require('../../services/Counter');
 
 class ClassParser {
 
@@ -43,6 +44,10 @@ class ClassParser {
 
                 const classRegexp = /class \w+.\{/g;
                 const classMatches = rawFileString.match(classRegexp);
+
+                if(classMatches && classMatches.length) {
+                    Counter.increaseClassCount(classMatches.length);
+                }
 
                 checkClassDefinitionsMoreThanOne(classMatches);
 

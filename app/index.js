@@ -8,6 +8,7 @@ const MethodParser = require('./parsers/method/MethodParser');
 const ClassParser = require('./parsers/class/ClassParser');
 const recursive = require('recursive-readdir');
 const _ = require('lodash');
+const Counter = require('./services/Counter');
 let CONFIG = null;
 
 if( ! pathArgument) {
@@ -54,7 +55,7 @@ function parseFile(pathArgument){
 	const promiseList = [
 	    ClassParser.assertLinesLength(lineReader, pathArgument),
         MethodParser.parse(lineReader, pathArgument),
-        ClassParser.parse(lineReader, pathArgument)
+        ClassParser.parse(pathArgument)
     ];
 
     return Promise.all(promiseList);
@@ -107,5 +108,6 @@ function isExcludedFileExtension(filePath) {
 }
 
 function finishProcessing() {
+    console.log(Counter.getClassCount());
     console.log('FINIIIIIIIIISH'.green);
 }
