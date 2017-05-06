@@ -1,22 +1,26 @@
 'use strict';
 const colors = require('colors');
 
-let classCounter = 0;
+let COUNTER = {
+    CLASS: 0,
+    CLASS_LINE_LENGTH: 0,
+    CLASS_DEFINITION_MORE_THAN_ONE: 0,
+    CLASS_NAME_RULE: 0
+};
 
 class Counter {
 
-    static count() {
-
+    static increase(counter, count) {
+        COUNTER[counter] += count;
     }
 
-    static increaseClassCount(count) {
-        classCounter = classCounter + count;
-    }
-
-    static getClassCount() {
-        return classCounter;
+    static get(counter) {
+        return COUNTER[counter];
     }
 
 }
 
-module.exports = Counter;
+module.exports = {
+    Counter,
+    COUNTER
+};

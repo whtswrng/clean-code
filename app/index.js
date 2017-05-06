@@ -9,6 +9,7 @@ const ClassParser = require('./parsers/class/ClassParser');
 const recursive = require('recursive-readdir');
 const _ = require('lodash');
 const Counter = require('./services/Counter');
+const SummaryPrinter = require('./services/SummaryPrinter');
 let CONFIG = null;
 
 if( ! pathArgument) {
@@ -108,6 +109,7 @@ function isExcludedFileExtension(filePath) {
 }
 
 function finishProcessing() {
-    console.log(Counter.getClassCount());
+    SummaryPrinter.split();
+    SummaryPrinter.printClassSummary();
     console.log('FINIIIIIIIIISH'.green);
 }
