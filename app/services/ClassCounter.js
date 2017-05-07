@@ -1,26 +1,22 @@
 'use strict';
-const COUNTER = {
-    CLASS: 0,
-    CLASS_LINE_LENGTH: 0,
-    CLASS_DEFINITION_MORE_THAN_ONE: 0,
-    CLASS_NAME_RULE: 0
-};
+let COUNTER = {};
 
 const CONSTS = {
     CLASS: 'CLASS',
+    METHOD_COUNT_OVERFLOW: 'METHOD_COUNT_OVERFLOW',
     CLASS_LINE_LENGTH: 'CLASS_LINE_LENGTH',
     CLASS_DEFINITION_MORE_THAN_ONE: 'CLASS_DEFINITION_MORE_THAN_ONE',
     CLASS_NAME_RULE: 'CLASS_NAME_RULE'
 };
 
-const VIOLATION_COUNTER = {
-
-};
-
 class Counter {
 
     static increase(counter, count) {
-        COUNTER[counter] += count;
+        if( ! COUNTER[counter]) {
+            COUNTER[counter] = count;
+        } else {
+            COUNTER[counter] += count;
+        }
     }
 
     static get(counter) {
@@ -29,7 +25,7 @@ class Counter {
 
     static count(counter){
         return {
-            correct: COUNTER[CONSTS.CLASS] - COUNTER[counter],
+            correct: COUNTER[CONSTS.CLASS] || 0 - (COUNTER[counter] || 0),
             incorrect: COUNTER[counter]
         }
     }

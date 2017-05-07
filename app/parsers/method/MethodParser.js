@@ -1,6 +1,8 @@
 'use strict';
 const CONSTS = require('../../consts');
 const MethodCounter = require('../../services/MethodCounter').Counter;
+const ClassCounter = require('../../services/ClassCounter').Counter;
+const CLASS_CONSTS = require('../../services/ClassCounter').CONSTS;
 const METHOD_CONSTS = require('../../services/MethodCounter').CONSTS;
 const colors = require('colors');
 const _ = require('lodash');
@@ -47,7 +49,6 @@ class MethodParser {
 
             function parseMethodHead(methodDefinition, line) {
                 if( ! isCallbackLine(line) && isInMethod) {
-                    MethodCounter.increase(METHOD_CONSTS.METHOD, 1);
                     finish();
                     reset();
                 }
@@ -57,6 +58,7 @@ class MethodParser {
                 bracketCounter++;
 
                 if(methodDefinition) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD, 1);
                     methodName = methodDefinition[1] || 'function';
                     methodArguments = extractMethodArguments(methodDefinition[2]);
                     checkMethodArguments(methodName, methodArguments);
@@ -133,13 +135,13 @@ class MethodParser {
 
             function checkMethodCount(methodCount) {
                 if(methodCount > CONSTS.MAX_RECOMMENDED_METHODS) {
-                    MethodCounter.increase(METHOD_CONSTS.METHOD_COUNT_OVERFLOW, 1);
+                    ClassCounter.increase(CLASS_CONSTS.METHOD_COUNT_OVERFLOW, 1);
                     PrinterAdapter.title(`Method count overflow`);
                     PrinterAdapter.warning(
                         `${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`
                     );
                 } else if (methodCount > CONSTS.MAX_METHODS) {
-                    MethodCounter.increase(METHOD_CONSTS.METHOD_COUNT_OVERFLOW, 1);
+                    ClassCounter.increase(CLASS_CONSTS.METHOD_COUNT_OVERFLOW, 1);
                     PrinterAdapter.title(`Method count overflow`);
                     PrinterAdapter.warning(
                         `${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`

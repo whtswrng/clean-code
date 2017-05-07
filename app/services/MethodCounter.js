@@ -26,7 +26,7 @@ class Counter {
 
     static count(counter){
         return {
-            correct: COUNTER[CONSTS.METHOD] - COUNTER[counter],
+            correct: COUNTER[CONSTS.METHOD] || 0 - COUNTER[counter] || 0,
             incorrect: COUNTER[counter]
         }
     }

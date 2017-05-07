@@ -18,7 +18,7 @@ class SummaryPrinter {
         printClassLineLength();
         printClassLineName();
         printClassDefinitionMoreThanOne();
-        // printMethodCountOverflow();
+        printMethodCountOverflow();
     }
 
     static split(){
@@ -51,6 +51,15 @@ function printClassLineName() {
 
     if(summary.incorrect) {
         console.log(`       ✖ `.red + `${summary.incorrect} classes violate name rule`.bold);
+    }
+}
+
+function printMethodCountOverflow() {
+    const summary = ClassCounter.count(CLASS_CONSTS.METHOD_COUNT_OVERFLOW);
+    console.log(`   ✓ `.green + `${summary.correct} classes does not violate argument length`);
+
+    if(summary.incorrect) {
+        console.log(`       ✖ `.red + `${summary.incorrect} classes does violate argument length`.bold);
     }
 }
 
@@ -89,15 +98,6 @@ function printMethodArgumentLength() {
         console.log(`       ✖ `.red + `${summary.incorrect} functions does violate argument length`.bold);
     }
 }
-
-// function printMethodCountOverflow() {
-//     const summary = MethodCounter.count(METHOD_CONSTS.METHOD_COUNT_OVERFLOW);
-//     console.log(`   ✓ `.green + `${summary.correct} functions does not violate argument length`);
-//
-//     if(summary.incorrect) {
-//         console.log(`       ✖ `.red + `${summary.incorrect} functions does violate argument length`.bold);
-//     }
-// }
 
 function printBooleanAsArgument() {
     const summary = MethodCounter.count(METHOD_CONSTS.BOOLEAN_AS_ARGUMENT);

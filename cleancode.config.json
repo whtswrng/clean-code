@@ -1,4 +1,4 @@
 {
-    "include": [".ts"],
-    "exclude": ["spec.ts", ".d.ts"]
+    "include": [".js"],
+    "exclude": ["spec.js", "test.js"]
 }
