@@ -21,6 +21,10 @@ class SummaryPrinter {
         // printMethodCountOverflow();
     }
 
+    static split(){
+        console.log('');
+    }
+
     static printMethodSummary() {
         console.log('Method design'.bold);
         printCallbackHell();

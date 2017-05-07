@@ -110,5 +110,7 @@ function isExcludedFileExtension(filePath) {
 function finishProcessing() {
     SummaryPrinter.start();
     SummaryPrinter.printClassSummary();
+    SummaryPrinter.split();
     SummaryPrinter.printMethodSummary();
+    SummaryPrinter.split();
 }
