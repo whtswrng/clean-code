@@ -56,10 +56,10 @@ function printClassLineName() {
 
 function printMethodCountOverflow() {
     const summary = ClassCounter.count(CLASS_CONSTS.METHOD_COUNT_OVERFLOW);
-    console.log(`   ✓ `.green + `${summary.correct} classes does not violate argument length`);
+    console.log(`   ✓ `.green + `${summary.correct} files does not violate methods overflow rule`);
 
     if(summary.incorrect) {
-        console.log(`       ✖ `.red + `${summary.incorrect} classes does violate argument length`.bold);
+        console.log(`       ✖ `.red + `${summary.incorrect} files does violate methods overflow rule`.bold);
     }
 }
 

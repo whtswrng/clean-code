@@ -26,11 +26,16 @@ class Counter {
 
     static count(counter){
         return {
-            correct: COUNTER[CONSTS.METHOD] || 0 - COUNTER[counter] || 0,
+            correct: countCorrectValue(counter),
             incorrect: COUNTER[counter]
         }
     }
 
+}
+
+function countCorrectValue(counter) {
+    const value = (COUNTER[CONSTS.METHOD] || 0) - (COUNTER[counter] || 0);
+    return value > 0 ? value : 0;
 }
 
 module.exports = {
