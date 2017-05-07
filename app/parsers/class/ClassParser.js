@@ -4,7 +4,8 @@ const colors = require('colors');
 const fs = require('fs');
 const _ = require('lodash');
 const PrinterAdapter = require('../../services/PrinterAdapter');
-const Counter = require('../../services/Counter').Counter;
+const ClassCounter = require('../../services/ClassCounter').Counter;
+const CLASS_CONSTS = require('../../services/ClassCounter').CONSTS;
 
 class ClassParser {
 
@@ -24,6 +25,7 @@ class ClassParser {
 
         function finishCountingLinesLength() {
             if(count > CONSTS.CLASS_LINES_LENGTH){
+                ClassCounter.increase(CLASS_CONSTS.CLASS_LINE_LENGTH, 1);
                 PrinterAdapter.title('Class lines length violation');
                 PrinterAdapter.warning(
                     `Found ${count} lines in file "${filePath.bold}". Recommended is ${CONSTS.CLASS_LINES_LENGTH}.`
@@ -46,7 +48,7 @@ class ClassParser {
                 const classMatches = rawFileString.match(classRegexp);
 
                 if(classMatches && classMatches.length) {
-                    Counter.increase('CLASS', classMatches.length);
+                    ClassCounter.increase(CLASS_CONSTS.CLASS, classMatches.length);
                 }
 
                 checkClassDefinitionsMoreThanOne(classMatches);
@@ -59,6 +61,7 @@ class ClassParser {
 
 		function checkClassDefinitionsMoreThanOne(classMatches) {
 			if(classMatches && classMatches.length > 1){
+                ClassCounter.increase(CLASS_CONSTS.CLASS_DEFINITION_MORE_THAN_ONE, classMatches.length);
 				PrinterAdapter.title('Class rule violation');
 				PrinterAdapter.warning(
 					`Found ${classMatches.length} classes definition in file "${filePathArgument.bold}", please consider refactoring.`
@@ -73,6 +76,7 @@ class ClassParser {
 				`You should avoid using words in class names like ` + `Processor, Manager, Data, Info.`.bold;
 
 			if(className.match(incorrectClassNamesRegex)){
+                ClassCounter.increase(CLASS_CONSTS.CLASS_NAME_RULE, 1);
 				PrinterAdapter.title(`Class name rule violation`);
 				PrinterAdapter.warning(errorMessage);
 			}

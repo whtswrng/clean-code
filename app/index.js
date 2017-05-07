@@ -8,7 +8,6 @@ const MethodParser = require('./parsers/method/MethodParser');
 const ClassParser = require('./parsers/class/ClassParser');
 const recursive = require('recursive-readdir');
 const _ = require('lodash');
-const Counter = require('./services/Counter');
 const SummaryPrinter = require('./services/SummaryPrinter');
 let CONFIG = null;
 

@@ -1,5 +1,6 @@
 'use strict';
-const Counter = require('./Counter').Counter;
+const ClassCounter = require('./ClassCounter').Counter;
+const CLASS_CONSTS = require('./ClassCounter').CONSTS;
 const colors = require('colors');
 
 class SummaryPrinter {
@@ -12,10 +13,19 @@ class SummaryPrinter {
 
     static printClassSummary() {
         console.log('Class design'.bold);
-        console.log(`   ${Counter.get('CLASS')} classes`.bold.italic);
-        console.log(`       ✓ `.green + `does not violate line length`);
-        console.log(`       ✓ `.green + `does not violate name rule`);
-        console.log(`       ✓ `.green + `does not have more than 1 definition in file`);
+        printClassLineLength();
+        console.log(`   ✓ `.green + `${ClassCounter.get(CLASS_CONSTS.CLASS)} classes does not violate line name rule`);
+        console.log(`   ✓ `.green + `${ClassCounter.get(CLASS_CONSTS.CLASS)} classes does not have more than 1 definition in file`);
+    }
+
+}
+
+function printClassLineLength() {
+    const summary = ClassCounter.count(CLASS_CONSTS.CLASS_LINE_LENGTH);
+
+    console.log(`   ✓ `.green + `${summary.correct} classes does not violate line length rule`);
+    if(summary.incorrect) {
+        console.log(`       ✖ `.red + `${summary.incorrect} classes violate line length rule`.bold);
     }
 
 }
