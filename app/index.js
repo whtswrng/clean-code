@@ -108,7 +108,7 @@ function isExcludedFileExtension(filePath) {
 }
 
 function finishProcessing() {
-    SummaryPrinter.split();
+    SummaryPrinter.start();
     SummaryPrinter.printClassSummary();
-    console.log('FINIIIIIIIIISH'.green);
+    SummaryPrinter.printMethodSummary();
 }

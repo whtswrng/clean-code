@@ -1,5 +1,7 @@
 'use strict';
 const CONSTS = require('../../consts');
+const MethodCounter = require('../../services/MethodCounter').Counter;
+const METHOD_CONSTS = require('../../services/MethodCounter').CONSTS;
 const colors = require('colors');
 const _ = require('lodash');
 const PrinterAdapter = require('../../services/PrinterAdapter');
@@ -45,6 +47,7 @@ class MethodParser {
 
             function parseMethodHead(methodDefinition, line) {
                 if( ! isCallbackLine(line) && isInMethod) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD, 1);
                     finish();
                     reset();
                 }
@@ -89,9 +92,9 @@ class MethodParser {
                         `Functions should do only one thing.`;
 
                     if(line.match(regex)) {
+                        MethodCounter.increase(METHOD_CONSTS.BOOLEAN_AS_ARGUMENT, 1);
                         PrinterAdapter.title(`Boolean as argument problem`);
                         PrinterAdapter.warning(errorMessage)
-
                     }
                 });
             }
@@ -130,11 +133,13 @@ class MethodParser {
 
             function checkMethodCount(methodCount) {
                 if(methodCount > CONSTS.MAX_RECOMMENDED_METHODS) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD_COUNT_OVERFLOW, 1);
                     PrinterAdapter.title(`Method count overflow`);
                     PrinterAdapter.warning(
                         `${methodCount} methods in file ${filePath.bold}. Recommended is less than ${CONSTS.MAX_RECOMMENDED_METHODS}`
                     );
                 } else if (methodCount > CONSTS.MAX_METHODS) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD_COUNT_OVERFLOW, 1);
                     PrinterAdapter.title(`Method count overflow`);
                     PrinterAdapter.warning(
                         `${methodCount} methods in file ${filePath.bold}. Should be less than ${CONSTS.MAX_METHODS}`
@@ -147,6 +152,7 @@ class MethodParser {
                     `Recommended arguments length is ${CONSTS.ARGUMENTS_LENGTH}.`;
 
                 if(methodArguments.length > CONSTS.ARGUMENTS_LENGTH) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD_ARGUMENT_LENGTH, 1);
                     PrinterAdapter.title(`Method arguments length violation`);
                     PrinterAdapter.warning(errorMessage);
                 }
@@ -157,6 +163,7 @@ class MethodParser {
                     `Consider refactoring. `;
 
                 if(callbackNesting > CONSTS.MAX_CALLBACK_NESTING_COUNT) {
+                    MethodCounter.increase(METHOD_CONSTS.CALLBACK_HELL, 1);
                     PrinterAdapter.title(`Callback hell`);
                     PrinterAdapter.warning(errorMessage);
                     PrinterAdapter.error('Lines: ');
@@ -172,6 +179,7 @@ class MethodParser {
                     `Recommended line length is ${CONSTS.METHOD_LINES_LENGTH}.`;
 
                 if(methodLineCount > CONSTS.METHOD_LINES_LENGTH) {
+                    MethodCounter.increase(METHOD_CONSTS.METHOD_LONG_LINE, 1);
                     PrinterAdapter.title(`Method lines length violation`);
                     PrinterAdapter.warning(errorMessage);
                 }
