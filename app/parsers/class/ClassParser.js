@@ -61,7 +61,7 @@ class ClassParser {
 
 		function checkClassDefinitionsMoreThanOne(classMatches) {
 			if(classMatches && classMatches.length > 1){
-                ClassCounter.increase(CLASS_CONSTS.CLASS_DEFINITION_MORE_THAN_ONE, classMatches.length);
+                ClassCounter.increase(CLASS_CONSTS.CLASS_DEFINITION_MORE_THAN_ONE, classMatches.length - 1);
 				PrinterAdapter.title('Class rule violation');
 				PrinterAdapter.warning(
 					`Found ${classMatches.length} classes definition in file "${filePathArgument.bold}", please consider refactoring.`
