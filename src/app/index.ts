@@ -1,14 +1,6 @@
 'use strict';
 const fs = require('fs');
 const colors = require('colors');
-const pathArgument = process.argv[2];
-const configPathArgument = process.argv[3];
-const CONSTS = require('./consts');
-const MethodParser = require('./parsers/method/MethodParser');
-const ClassParser = require('./parsers/class/ClassParser');
-const recursive = require('recursive-readdir');
-const _ = require('lodash');
-const SummaryPrinter = require('./services/SummaryPrinter');
 let CONFIG = null;
 
 if( ! pathArgument) {
