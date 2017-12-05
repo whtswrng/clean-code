@@ -3,4 +3,4 @@
 
 process.title = 'cleancode';
 
-require('../app/index');
+require('../src/app/index');
