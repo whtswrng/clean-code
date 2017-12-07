@@ -7,4 +7,7 @@ export const config  = {
     MAX_CALLBACK_NESTING_COUNT: 1,
     DEFAULT_FILE_INCLUDED_EXTENSIONS: ['.ts'],
     DEFAULT_FILE_EXCLUDED_EXTENSIONS: ['.spec.ts'],
+    DEFAULT_PATH: './'
 };
+
+export type IncludedFileExtensions = Array<string>;
