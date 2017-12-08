@@ -1,6 +1,6 @@
 import {IncludedFileExtensions} from "../../../config";
 
-export class FileValidator {
+export class FileExtensionValidator {
 
     constructor(private includedFileExtensions: IncludedFileExtensions) {
 

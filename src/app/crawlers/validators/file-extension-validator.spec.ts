@@ -1,4 +1,4 @@
-import {FileValidator} from "./file-validator";
+import {FileExtensionValidator} from "./file-extension-validator";
 import {IncludedFileExtensions} from "../../../config";
 const chai = require('chai');
 const expect = chai.expect;
@@ -6,15 +6,15 @@ const chaiAsPromised = require("chai-as-promised");
 
 chai.use(chaiAsPromised);
 
-describe('FileValidator', () => {
+describe('FileExtensionValidator', () => {
     let includedFileExtensions: IncludedFileExtensions;
-    let fileValidator: FileValidator;
+    let fileValidator: FileExtensionValidator;
 
     it('should construct', () => {
         includedFileExtensions = ['ts'];
         initValidator();
 
-        expect(fileValidator).to.be.instanceof(FileValidator);
+        expect(fileValidator).to.be.instanceof(FileExtensionValidator);
     });
 
     it('should not validate file path with all incorrect extensions', () => {
@@ -36,7 +36,7 @@ describe('FileValidator', () => {
     });
 
     function initValidator() {
-        fileValidator = new FileValidator(includedFileExtensions);
+        fileValidator = new FileExtensionValidator(includedFileExtensions);
     }
 
 });
