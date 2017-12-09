@@ -14,7 +14,7 @@ export class TypescriptMethodCountParser extends FileParser implements IFilePars
 
     public readLine(lineString) {
         super.readLine(lineString);
-        if (this.isNestedInClass() && this.lineParser.hasMethodDefinition(lineString)) {
+        if (this.isNestedInClass() && this.lineParser.hasFunctionDefinition(lineString)) {
             this.methodCount++;
         }
     }

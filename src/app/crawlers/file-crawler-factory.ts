@@ -5,6 +5,7 @@ import {ILineReader} from "./line-readers/line-reader.interface";
 import {LineReader} from "./line-readers/line-reader";
 import {Reporter} from "./reporters/reporter";
 import {LineValidator} from "./line-parsers/line-validator";
+import {TypescriptMethodParametersParser} from "./file-parsers/typescript/method-parameters-parser/method-parameters-parser";
 
 export class FileCrawlerFactory {
 
@@ -21,5 +22,6 @@ export class FileCrawlerFactory {
         const lineParser = new LineValidator();
 
         fileCrawler.addFileParser(new TypescriptMethodCountParser(reporter, lineParser));
+        fileCrawler.addFileParser(new TypescriptMethodParametersParser(reporter, lineParser));
     }
 }

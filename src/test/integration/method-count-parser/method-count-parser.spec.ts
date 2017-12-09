@@ -1,11 +1,11 @@
 import * as sinon from 'sinon';
-import {REPORTS, TypescriptMethodCountParser} from "./method-count-parser";
-import {DummyReporter} from "../../../reporters/dummy-reporter";
-import {IFileCrawler} from "../../../file-crawler.interface";
-import {LineValidator} from "../../../line-parsers/line-validator";
-import {config} from "../../../../../config";
-import {IReporter} from "../../../reporters/reporter.interface";
-import {prepareFileForCrawling} from "../../helpers";
+import {REPORTS, TypescriptMethodCountParser} from "../../../app/crawlers/file-parsers/typescript/method-count-parser/method-count-parser";
+import {DummyReporter} from "../../../app/crawlers/reporters/dummy-reporter";
+import {IFileCrawler} from "../../../app/crawlers/file-crawler.interface";
+import {LineValidator} from "../../../app/crawlers/line-parsers/line-validator";
+import {config} from "../../../config";
+import {IReporter} from "../../../app/crawlers/reporters/reporter.interface";
+import {prepareFileForCrawling} from "../../../app/crawlers/file-parsers/helpers";
 
 const chai = require('chai');
 const expect = chai.expect;

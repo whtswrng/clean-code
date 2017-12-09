@@ -1,10 +1,8 @@
 import * as sinon from 'sinon';
 import {DummyReporter} from "../../../reporters/dummy-reporter";
-import {IFileCrawler} from "../../../file-crawler.interface";
 import {LineValidator} from "../../../line-parsers/line-validator";
 import {config} from "../../../../../config";
 import {IReporter} from "../../../reporters/reporter.interface";
-import {prepareFileForCrawling} from "../../helpers";
 import {REPORTS, TypescriptMethodParametersParser} from "./method-parameters-parser";
 
 const chai = require('chai');
@@ -18,7 +16,6 @@ describe("Method Parameters Parser", () => {
     let reporter: IReporter;
     let methodParameterParser: TypescriptMethodParametersParser;
     let sandbox;
-    let fileCrawler: IFileCrawler;
 
     beforeEach(async () => {
         sandbox = sinon.sandbox.create();
@@ -30,25 +27,16 @@ describe("Method Parameters Parser", () => {
         sandbox.restore();
     });
 
-    describe('when parse file with 3 methods exceeding parameters count', () => {
+    it(`should report that there are function parameter violation`, async () => {
+        const reportSpy = sandbox.spy(reporter, 'report');
 
-        beforeEach( () => {
-            fileCrawler = prepareFileForCrawling(
-                methodParameterParser, `${__dirname}/test/class-with-2-methods-exceeded-parameters-count.test.ts`
-            );
-        });
+        methodParameterParser.readLine('public fooBar(fooo, bar, baz, ofof) {');
+        methodParameterParser.readLine('public fooBar(fooo: number, bar, baz: string, ofof) {');
+        methodParameterParser.readLine('public fooBar(a, b, c, d, e) {');
 
-        it(`should report that there are more than ${config.MAX_FUNCTION_PARAMETERS_LENGTH} methods in class`, async () => {
-            const reportSpy = sandbox.spy(reporter, 'report');
-
-            await fileCrawler.start();
-
-            sinon.assert.calledThrice(reportSpy);
-            sinon.assert.calledWith(reportSpy, REPORTS.FUNCTION_PARAMETERS_EXCEEDED);
-        });
-
+        sinon.assert.calledThrice(reportSpy);
+        sinon.assert.calledWith(reportSpy, REPORTS.FUNCTION_PARAMETERS_EXCEEDED);
     });
-
 
 });
 

@@ -6,13 +6,15 @@ import {FileParser} from "../../file-parser";
 
 export class TypescriptMethodParametersParser extends FileParser implements IFileParser {
 
-    constructor(private reporter: IReporter, protected lineParser: LineValidator) {
-        super(lineParser);
+    constructor(private reporter: IReporter, protected lineValidator: LineValidator) {
+        super(lineValidator);
     }
 
-    public readLine(lineString) {
-        console.log(lineString)
-        super.readLine(lineString);
+    public readLine(line) {
+        super.readLine(line);
+        if(this.lineValidator.hasFunctionDefinition(line) && this.lineValidator.hasFunctionMoreThanThreeArguments(line)) {
+            this.reporter.report(REPORTS.FUNCTION_PARAMETERS_EXCEEDED, line, this.lineNumber);
+        }
     }
 
     public stop() {

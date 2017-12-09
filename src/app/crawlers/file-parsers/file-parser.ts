@@ -4,7 +4,7 @@ import {LineValidator} from "../line-parsers/line-validator";
 export class FileParser implements IFileParser {
 
     protected filePath: string;
-    protected lineCount: number = 0;
+    protected lineNumber: number = 0;
     protected nestingCount: number = 0;
     private shouldIncrementNestingCount: boolean;
 
@@ -17,7 +17,7 @@ export class FileParser implements IFileParser {
     }
 
     public readLine(line: string): void {
-        this.lineCount++;
+        this.lineNumber++;
         this.processNestingCount(line);
         this.determineWhetherIncrementNestingCount(line);
     }
