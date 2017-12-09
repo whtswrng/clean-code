@@ -32,5 +32,5 @@ export class TypescriptMethodCountParser extends FileParser implements IFilePars
 }
 
 export const REPORTS = {
-    METHOD_COUNT_EXCEEDED: 'More than 2 methods!'
+    METHOD_COUNT_EXCEEDED: `More than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods!`
 };

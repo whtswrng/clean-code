@@ -67,6 +67,24 @@ describe("Method Count Parser", () => {
 
     });
 
+    describe('when parse file which has 11 methods and a lot of junk in it', () => {
+
+        beforeEach( () => {
+            fileCrawler = prepareFileForCrawling(
+                methodCountParser, `${__dirname}/test/class-with-11-methods-and-junk.test.ts`
+            );
+        });
+
+        it(`should not report that there are more than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods in class`, async () => {
+            const reportSpy = sandbox.spy(reporter, 'report');
+
+            await fileCrawler.start();
+
+            sinon.assert.calledOnce(reportSpy);
+        });
+
+    });
+
 
 });
 

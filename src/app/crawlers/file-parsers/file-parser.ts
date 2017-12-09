@@ -32,7 +32,8 @@ export class FileParser implements IFileParser {
         if (this.shouldIncrementNestingCount) {
             this.nestingCount++;
             this.shouldIncrementNestingCount = false;
-        } else if (this.lineParser.hasEndBraces(line)) {
+        }
+        if (this.lineParser.hasEndBraces(line)) {
             this.nestingCount--;
         }
     }

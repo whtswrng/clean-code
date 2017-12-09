@@ -1,26 +1,26 @@
 export class ClassWithTwoMethodsTest {
 
-    public someCoolMethodWithCoolStuff() {
+    public someCoolMethodWithCoolStuff(): void {
 
     }
 
-    private foooooooooo() {
+    private foooooooooo(): any {
 
     }
 
-    private bazBar() {
+    private bazBar(): any {
 
     }
 
-    private stop() {
+    private stop(): any {
 
     }
 
-    private notThatCool() {
+    private notThatCool():any {
 
     }
 
-    private buildA() {
+    private buildA(): void {
 
     }
 

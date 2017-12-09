@@ -1,4 +1,4 @@
-export const METHOD_START_REGEXP = /([a-zA-Z]\w+)\(\)\s*{/g;
+export const METHOD_START_REGEXP = /([a-zA-Z]\w+)\(\).*{/g;
 export const START_BRACES = /{/g;
 export const END_BRACES = /}/g;
 
