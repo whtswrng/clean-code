@@ -13,7 +13,7 @@ export class TypescriptMethodParametersParser extends FileParser implements IFil
     public readLine(line) {
         super.readLine(line);
         if(this.lineValidator.hasFunctionDefinition(line) && this.lineValidator.hasFunctionMoreThanThreeArguments(line)) {
-            this.reporter.report(REPORTS.FUNCTION_PARAMETERS_EXCEEDED, line, this.lineNumber);
+            this.reporter.report(REPORTS.FUNCTION_PARAMETERS_EXCEEDED, this.filePath, this.lineNumber);
         }
     }
 
