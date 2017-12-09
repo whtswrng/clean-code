@@ -39,4 +39,14 @@ describe('Line Validator', () => {
         expect(lineValidator.hasFunctionMoreThanThreeArguments('function foo()')).to.eq(false);
     });
 
+    it('should recognize ES6 callback', () => {
+        expect(lineValidator.hasES6CallBack('function foo(fafa, () => {')).to.eq(true);
+        expect(lineValidator.hasES6CallBack('function foo(fafa, foo =>{')).to.eq(true);
+        expect(lineValidator.hasES6CallBack('faa(() => {')).to.eq(true);
+
+        expect(lineValidator.hasES6CallBack('faa(() => 4')).to.eq(false);
+        expect(lineValidator.hasES6CallBack('faa(fofo => 4')).to.eq(false);
+        expect(lineValidator.hasES6CallBack('faa(function() {')).to.eq(false);
+    });
+
 });

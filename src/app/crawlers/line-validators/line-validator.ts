@@ -2,6 +2,7 @@ export const METHOD_START_REGEXP = /([a-zA-Z]\w+)\(.*\).*{/g;
 export const START_BRACES = /{/g;
 export const END_BRACES = /}/g;
 export const MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
+export const ES6_CALLBACK = /=>\s*{/g;
 
 export class LineValidator {
 
@@ -19,6 +20,18 @@ export class LineValidator {
 
     public hasFunctionMoreThanThreeArguments(line: string): boolean {
         return !!line.match(MORE_THAN_THREE_ARGUMENTS);
+    }
+
+    public hasES6CallBack(line: string): boolean {
+        return !!line.match(ES6_CALLBACK);
+    }
+
+    public foo(cb) {
+        this.foo(() => {
+            this.foo(() => {
+                // fofofo
+            })
+        });
     }
 
 }

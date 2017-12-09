@@ -27,7 +27,7 @@ describe("Method Parameters Parser", () => {
         sandbox.restore();
     });
 
-    it(`should report that there are function parameter violation`, async () => {
+    it(`should report that there are function parameters count violation when there are function definitions`, async () => {
         const reportSpy = sandbox.spy(reporter, 'report');
 
         methodParameterParser.readLine('public fooBar(fooo, bar, baz, ofof) {');
@@ -36,6 +36,16 @@ describe("Method Parameters Parser", () => {
 
         sinon.assert.calledThrice(reportSpy);
         sinon.assert.calledWith(reportSpy, REPORTS.FUNCTION_PARAMETERS_EXCEEDED);
+    });
+
+    it(`should not report that there are function parameters count violation when there are not function definitions`, async () => {
+        const reportSpy = sandbox.spy(reporter, 'report');
+
+        methodParameterParser.readLine('const fafa = "asdadad";');
+        methodParameterParser.readLine('const fa = () => {}');
+        methodParameterParser.readLine('class FOooo {');
+
+        sinon.assert.notCalled(reportSpy);
     });
 
 });
