@@ -33,14 +33,10 @@ describe("Method Count Parser", () => {
 
     describe('when parse file with a lot of methods', () => {
 
-        beforeEach(async () => {
-            const path = `${__dirname}/test/class-with-exceeded-method-count.test.ts`;
-            fileCrawler = new FileCrawler(path, new LineReader(path));
-            fileCrawler.addFileParser(methodCountParser);
-        });
-
-        it('should properly execute', async () => {
-            await assertValidCallsInFileParser(methodCountParser, fileCrawler);
+        beforeEach( () => {
+            fileCrawler = prepareFileForCrawling(
+                methodCountParser, `${__dirname}/test/class-with-exceeded-method-count.test.ts`
+            );
         });
 
         it(`should report that there are more than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods in class`, async () => {
@@ -55,14 +51,10 @@ describe("Method Count Parser", () => {
 
     describe('when parse file with not many methods', () => {
 
-        beforeEach(async () => {
-            const path = `${__dirname}/test/class-with-not-many-method-count.test.ts`;
-            fileCrawler = new FileCrawler(path, new LineReader(path));
-            fileCrawler.addFileParser(methodCountParser);
-        });
-
-        it('should properly execute', async () => {
-            await assertValidCallsInFileParser(methodCountParser, fileCrawler);
+        beforeEach( () => {
+            fileCrawler = prepareFileForCrawling(
+                methodCountParser, `${__dirname}/test/class-with-not-many-method-count.test.ts`
+            );
         });
 
         it(`should not report that there are more than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods in class`, async () => {
@@ -78,16 +70,9 @@ describe("Method Count Parser", () => {
 
 });
 
-export async function assertValidCallsInFileParser(fileParser, fileCrawler) {
-    const sandbox = sinon.sandbox.create();
-    const startSpy = sandbox.spy(fileParser, 'start');
-    const readLineSpy = sandbox.spy(fileParser, 'readLine');
-    const stopSpy = sandbox.spy(fileParser, 'stop');
 
-    await fileCrawler.start();
-
-    sinon.assert.calledOnce(startSpy);
-    sinon.assert.called(readLineSpy);
-    sinon.assert.calledOnce(stopSpy);
-    sandbox.restore();
+export function prepareFileForCrawling(fileParser, path) {
+    const fileCrawler = new FileCrawler(path, new LineReader(path));
+    fileCrawler.addFileParser(fileParser);
+    return fileCrawler;
 }
