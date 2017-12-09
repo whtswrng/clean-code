@@ -4,6 +4,9 @@ import {FileCrawler} from "../../../file-crawler";
 import {LineReader} from "../../../line-readers/line-reader";
 import {DummyReporter} from "../../../reporters/dummy-reporter";
 import {IFileCrawler} from "../../../file-crawler.interface";
+import {LineParser} from "../../../line-parsers/line-parser";
+import {config} from "../../../../../config";
+import {IReporter} from "../../../reporters/reporter.interface";
 
 const chai = require('chai');
 const expect = chai.expect;
@@ -13,40 +16,78 @@ chai.use(chaiAsPromised);
 
 describe("Method Count Parser", () => {
 
-    const reporter = new DummyReporter();
-    const methodCountParser = new TypescriptMethodCountParser(reporter);
-    const path = `${__dirname}/test/class-with-two-methods.test.ts`;
+    let reporter: IReporter;
+    let methodCountParser: TypescriptMethodCountParser;
     let sandbox;
     let fileCrawler: IFileCrawler;
 
     beforeEach(async () => {
         sandbox = sinon.sandbox.create();
-        fileCrawler = new FileCrawler(path, new LineReader(path));
-        fileCrawler.addFileParser(methodCountParser);
+        reporter = new DummyReporter();
+        methodCountParser = new TypescriptMethodCountParser(reporter, new LineParser());
     });
 
     afterEach(function () {
         sandbox.restore();
     });
 
-    it('should properly execute', async () => {
-        const startSpy = sandbox.spy(methodCountParser, 'start');
-        const readLineSpy = sandbox.spy(methodCountParser, 'readLine');
-        const stopSpy = sandbox.spy(methodCountParser, 'stop');
+    describe('when parse file with a lot of methods', () => {
 
-        await fileCrawler.start();
+        beforeEach(async () => {
+            const path = `${__dirname}/test/class-with-exceeded-method-count.test.ts`;
+            fileCrawler = new FileCrawler(path, new LineReader(path));
+            fileCrawler.addFileParser(methodCountParser);
+        });
 
-        sinon.assert.calledOnce(startSpy);
-        sinon.assert.called(readLineSpy);
-        sinon.assert.calledOnce(stopSpy);
+        it('should properly execute', async () => {
+            await assertValidCallsInFileParser(methodCountParser, fileCrawler);
+        });
+
+        it(`should report that there are more than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods in class`, async () => {
+            const reportSpy = sandbox.spy(reporter, 'report');
+
+            await fileCrawler.start();
+
+            sinon.assert.calledWith(reportSpy, REPORTS.METHOD_COUNT_EXCEEDED);
+        });
+
     });
 
-    it('should report that there are 2 methods', async () => {
-        const reportSpy = sandbox.spy(reporter, 'report');
+    describe('when parse file with not many methods', () => {
 
-        await fileCrawler.start();
+        beforeEach(async () => {
+            const path = `${__dirname}/test/class-with-not-many-method-count.test.ts`;
+            fileCrawler = new FileCrawler(path, new LineReader(path));
+            fileCrawler.addFileParser(methodCountParser);
+        });
 
-        sinon.assert.calledWith(reportSpy, REPORTS.MORE_THAN_2_METHODS);
+        it('should properly execute', async () => {
+            await assertValidCallsInFileParser(methodCountParser, fileCrawler);
+        });
+
+        it(`should not report that there are more than ${config.MAX_RECOMMENDED_METHODS_PER_CLASS} methods in class`, async () => {
+            const reportSpy = sandbox.spy(reporter, 'report');
+
+            await fileCrawler.start();
+
+            sinon.assert.notCalled(reportSpy);
+        });
+
     });
+
 
 });
+
+export async function assertValidCallsInFileParser(fileParser, fileCrawler) {
+    const sandbox = sinon.sandbox.create();
+    const startSpy = sandbox.spy(fileParser, 'start');
+    const readLineSpy = sandbox.spy(fileParser, 'readLine');
+    const stopSpy = sandbox.spy(fileParser, 'stop');
+
+    await fileCrawler.start();
+
+    sinon.assert.calledOnce(startSpy);
+    sinon.assert.called(readLineSpy);
+    sinon.assert.calledOnce(stopSpy);
+    sandbox.restore();
+}

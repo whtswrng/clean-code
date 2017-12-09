@@ -4,7 +4,23 @@ export class ClassWithTwoMethodsTest {
 
     }
 
+    private foooooooooo() {
+
+    }
+
+    private bazBar() {
+
+    }
+
+    private stop() {
+
+    }
+
     private notThatCool() {
+
+    }
+
+    private buildA() {
 
     }
 

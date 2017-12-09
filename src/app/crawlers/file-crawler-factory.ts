@@ -3,6 +3,8 @@ import {TypescriptMethodCountParser} from "./file-parsers/typescript/method-coun
 import * as fs from "fs";
 import {ILineReader} from "./line-readers/line-reader.interface";
 import {LineReader} from "./line-readers/line-reader";
+import {Reporter} from "./reporters/reporter";
+import {LineParser} from "./line-parsers/line-parser";
 
 export class FileCrawlerFactory {
 
@@ -15,6 +17,9 @@ export class FileCrawlerFactory {
     }
 
     private initFileParsers(fileCrawler: FileCrawler): void {
-        fileCrawler.addFileParser(new TypescriptMethodCountParser());
+        const reporter = new Reporter();
+        const lineParser = new LineParser();
+
+        fileCrawler.addFileParser(new TypescriptMethodCountParser(reporter, lineParser));
     }
 }
