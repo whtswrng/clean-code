@@ -67,11 +67,11 @@ describe("Method Count Parser", () => {
 
     });
 
-    describe('when parse file which has 11 methods and a lot of junk in it', () => {
+    describe('when parse file which has 9 methods and a lot of junk in it', () => {
 
         beforeEach( () => {
             fileCrawler = prepareFileForCrawling(
-                methodCountParser, `${__dirname}/test/class-with-11-methods-and-junk.test.ts`
+                methodCountParser, `${__dirname}/test/class-with-9-methods-and-junk.test.ts`
             );
         });
 
@@ -80,7 +80,7 @@ describe("Method Count Parser", () => {
 
             await fileCrawler.start();
 
-            sinon.assert.calledOnce(reportSpy);
+            sinon.assert.notCalled(reportSpy);
         });
 
     });

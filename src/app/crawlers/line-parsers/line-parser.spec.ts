@@ -21,6 +21,7 @@ describe('Line Parser', () => {
 
     it('should recognize nesting starting braces', () => {
         expect(lineParser.hasStartBraces('if () {')).to.eq(true);
+        expect(lineParser.hasStartBraces('{};')).to.eq(true);
     });
 
     it('should recognize nesting ending braces', () => {

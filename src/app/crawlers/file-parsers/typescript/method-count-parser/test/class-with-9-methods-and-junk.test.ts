@@ -22,18 +22,6 @@ export class ClassWithTwoMethodsTest {
         }
     }
 
-    private stop() {
-        function bar() {
-
-        }
-    }
-
-    private notThatCool() {
-        function bar() {
-
-        }
-    }
-
     private buildAFaaaaaaaaaa() {
         function bar() {
 
