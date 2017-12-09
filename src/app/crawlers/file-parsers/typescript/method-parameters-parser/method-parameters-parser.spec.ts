@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import {DummyReporter} from "../../../reporters/dummy-reporter";
-import {LineValidator} from "../../../line-parsers/line-validator";
+import {LineValidator} from "../../../line-validators/line-validator";
 import {config} from "../../../../../config";
 import {IReporter} from "../../../reporters/reporter.interface";
 import {REPORTS, TypescriptMethodParametersParser} from "./method-parameters-parser";

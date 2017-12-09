@@ -1,6 +1,6 @@
 import {IFileParser} from "../../file-parser.interface";
 import {IReporter} from "../../../reporters/reporter.interface";
-import {LineValidator} from "../../../line-parsers/line-validator";
+import {LineValidator} from "../../../line-validators/line-validator";
 import {config} from "../../../../../config";
 import {FileParser} from "../../file-parser";
 

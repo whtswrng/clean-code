@@ -1,5 +1,5 @@
 import {IFileParser} from "./file-parser.interface";
-import {LineValidator} from "../line-parsers/line-validator";
+import {LineValidator} from "../line-validators/line-validator";
 
 export class FileParser implements IFileParser {
 

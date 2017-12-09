@@ -6,7 +6,7 @@ import {
 } from "../../../app/crawlers/file-parsers/typescript/method-parameters-parser/method-parameters-parser";
 import {IFileCrawler} from "../../../app/crawlers/file-crawler.interface";
 import {DummyReporter} from "../../../app/crawlers/reporters/dummy-reporter";
-import {LineValidator} from "../../../app/crawlers/line-parsers/line-validator";
+import {LineValidator} from "../../../app/crawlers/line-validators/line-validator";
 import {prepareFileForCrawling} from "../../../app/crawlers/file-parsers/helpers";
 import {config} from "../../../config";
 

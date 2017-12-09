@@ -2,7 +2,7 @@ import * as sinon from 'sinon';
 import {REPORTS, TypescriptMethodCountParser} from "../../../app/crawlers/file-parsers/typescript/method-count-parser/method-count-parser";
 import {DummyReporter} from "../../../app/crawlers/reporters/dummy-reporter";
 import {IFileCrawler} from "../../../app/crawlers/file-crawler.interface";
-import {LineValidator} from "../../../app/crawlers/line-parsers/line-validator";
+import {LineValidator} from "../../../app/crawlers/line-validators/line-validator";
 import {config} from "../../../config";
 import {IReporter} from "../../../app/crawlers/reporters/reporter.interface";
 import {prepareFileForCrawling} from "../../../app/crawlers/file-parsers/helpers";

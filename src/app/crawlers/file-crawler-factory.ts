@@ -4,7 +4,7 @@ import * as fs from "fs";
 import {ILineReader} from "./line-readers/line-reader.interface";
 import {LineReader} from "./line-readers/line-reader";
 import {Reporter} from "./reporters/reporter";
-import {LineValidator} from "./line-parsers/line-validator";
+import {LineValidator} from "./line-validators/line-validator";
 import {TypescriptMethodParametersParser} from "./file-parsers/typescript/method-parameters-parser/method-parameters-parser";
 
 export class FileCrawlerFactory {
