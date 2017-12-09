@@ -1,3 +1,3 @@
 export interface IReporter {
-    report(msg: string): void
+    report(msg: string, path: string, lineNumber?: number): void
 }
