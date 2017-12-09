@@ -1,5 +1,4 @@
-import * as sinon from 'sinon';
-import {LineParser} from "./line-parser";
+import {LineValidator} from "./line-validator";
 
 const chai = require('chai');
 const expect = chai.expect;
@@ -9,7 +8,7 @@ chai.use(chaiAsPromised);
 
 describe('Line Parser', () => {
 
-    const lineParser = new LineParser();
+    const lineParser = new LineValidator();
 
     it('should recognize method definition', () => {
         expect(lineParser.hasMethodDefinition('private foo() {')).to.eq(true);

@@ -1,12 +1,11 @@
 import * as sinon from 'sinon';
 import {REPORTS, TypescriptMethodCountParser} from "./method-count-parser";
-import {FileCrawler} from "../../../file-crawler";
-import {LineReader} from "../../../line-readers/line-reader";
 import {DummyReporter} from "../../../reporters/dummy-reporter";
 import {IFileCrawler} from "../../../file-crawler.interface";
-import {LineParser} from "../../../line-parsers/line-parser";
+import {LineValidator} from "../../../line-parsers/line-validator";
 import {config} from "../../../../../config";
 import {IReporter} from "../../../reporters/reporter.interface";
+import {prepareFileForCrawling} from "../../helpers";
 
 const chai = require('chai');
 const expect = chai.expect;
@@ -24,7 +23,7 @@ describe("Method Count Parser", () => {
     beforeEach(async () => {
         sandbox = sinon.sandbox.create();
         reporter = new DummyReporter();
-        methodCountParser = new TypescriptMethodCountParser(reporter, new LineParser());
+        methodCountParser = new TypescriptMethodCountParser(reporter, new LineValidator());
     });
 
     afterEach(function () {
@@ -88,9 +87,3 @@ describe("Method Count Parser", () => {
 
 });
 
-
-export function prepareFileForCrawling(fileParser, path) {
-    const fileCrawler = new FileCrawler(path, new LineReader(path));
-    fileCrawler.addFileParser(fileParser);
-    return fileCrawler;
-}

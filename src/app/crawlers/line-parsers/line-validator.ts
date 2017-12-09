@@ -2,7 +2,7 @@ export const METHOD_START_REGEXP = /([a-zA-Z]\w+)\(\).*{/g;
 export const START_BRACES = /{/g;
 export const END_BRACES = /}/g;
 
-export class LineParser {
+export class LineValidator {
 
     public hasMethodDefinition(line: string): boolean {
         return !!line.match(METHOD_START_REGEXP);

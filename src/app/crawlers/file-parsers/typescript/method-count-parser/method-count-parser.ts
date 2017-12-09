@@ -1,6 +1,6 @@
 import {IFileParser} from "../../file-parser.interface";
 import {IReporter} from "../../../reporters/reporter.interface";
-import {LineParser} from "../../../line-parsers/line-parser";
+import {LineValidator} from "../../../line-parsers/line-validator";
 import {config} from "../../../../../config";
 import {FileParser} from "../../file-parser";
 
@@ -8,7 +8,7 @@ export class TypescriptMethodCountParser extends FileParser implements IFilePars
 
     private methodCount: number = 0;
 
-    constructor(private reporter: IReporter, protected lineParser: LineParser) {
+    constructor(private reporter: IReporter, protected lineParser: LineValidator) {
         super(lineParser);
     }
 

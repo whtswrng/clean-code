@@ -1,5 +1,5 @@
 import {IFileParser} from "./file-parser.interface";
-import {LineParser} from "../line-parsers/line-parser";
+import {LineValidator} from "../line-parsers/line-validator";
 
 export class FileParser implements IFileParser {
 
@@ -8,7 +8,7 @@ export class FileParser implements IFileParser {
     protected nestingCount: number = 0;
     private shouldIncrementNestingCount: boolean;
 
-    constructor(protected lineParser: LineParser) {
+    constructor(protected lineParser: LineValidator) {
 
     }
 
