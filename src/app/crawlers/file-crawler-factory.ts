@@ -1,12 +1,11 @@
 import {FileCrawler} from "./file-crawler";
 import {TypescriptMethodCountParser} from "./file-parsers/typescript/method-count-parser/method-count-parser";
-import * as fs from "fs";
-import {ILineReader} from "./line-readers/line-reader.interface";
 import {LineReader} from "./line-readers/line-reader";
 import {Reporter} from "./reporters/reporter";
 import {LineValidator} from "./line-validators/line-validator";
 import {TypescriptMethodParametersParser} from "./file-parsers/typescript/method-parameters-parser/method-parameters-parser";
 import {TypescriptCallbackNestingParser} from "./file-parsers/typescript/function-callback-nesting-parser/callback-nesting-parser";
+import {TypescriptMethodLinesCountParser} from "./file-parsers/typescript/method-lines-count-parser/method-lines-count-parser";
 
 export class FileCrawlerFactory {
 
@@ -25,5 +24,6 @@ export class FileCrawlerFactory {
         fileCrawler.addFileParser(new TypescriptMethodCountParser(reporter, lineParser));
         fileCrawler.addFileParser(new TypescriptMethodParametersParser(reporter, lineParser));
         fileCrawler.addFileParser(new TypescriptCallbackNestingParser(reporter, lineParser));
+        fileCrawler.addFileParser(new TypescriptMethodLinesCountParser(reporter, lineParser));
     }
 }
