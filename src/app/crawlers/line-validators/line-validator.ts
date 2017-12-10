@@ -26,12 +26,4 @@ export class LineValidator {
         return !!line.match(ES6_CALLBACK);
     }
 
-    public foo(cb) {
-        this.foo(() => {
-            this.foo(() => {
-                // fofofo
-            })
-        });
-    }
-
 }

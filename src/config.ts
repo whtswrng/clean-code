@@ -10,3 +10,4 @@ export const config  = {
 };
 
 export type IncludedFileExtensions = Array<string>;
+export type ExcludedFileExtensions = Array<string>;
