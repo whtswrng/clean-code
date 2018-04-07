@@ -1,21 +1,22 @@
-import {IReporter} from "../../../reporters/reporter.interface";
 import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
-import {config} from "../../../../../config";
 import {FileParser} from "../../file-parser";
+import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
 
 export class TypescriptMethodCounterParser extends FileParser {
 
-    constructor(private reporter: IReporter, protected lineParser: TypeScriptLineParser) {
+    constructor(private reporter: TypeScriptClassReporter, protected lineParser: TypeScriptLineParser) {
         super(lineParser);
     }
 
     public readLine(line) {
         super.readLine(line);
-        console.log(line);
+
+        if(this.lineParser.hasPrivateMethodDefinition(line)) {
+            this.reporter.reportPrivateMethod();
+        }
+        if(this.lineParser.hasPublicMethodDefinition(line)) {
+            this.reporter.reportPublicMethod();
+        }
     }
 
 }
-
-export const REPORTS = {
-    FUNCTION_PARAMETERS_EXCEEDED: `More than ${config.MAX_FUNCTION_PARAMETERS_LENGTH} methods!`
-};

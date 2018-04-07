@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const file_parser_1 = require("../../file-parser");
 class TypescriptClassParser extends file_parser_1.FileParser {
-    constructor(lineParser, classParsers) {
+    constructor(lineParser, classParsers, reporter) {
         super(lineParser);
         this.lineParser = lineParser;
         this.classParsers = classParsers;
+        this.reporter = reporter;
         this.isProcessingClass = false;
         this.processingFinished = false;
     }
@@ -30,6 +31,7 @@ class TypescriptClassParser extends file_parser_1.FileParser {
     }
     checkWhetherLineContainsClass(line) {
         if (this.lineParser.hasClassDefinition(line)) {
+            this.reporter.setClassName(this.lineParser.getClassNameFromLine(line));
             this.startClassProcessing();
         }
     }

@@ -1,13 +1,15 @@
 import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
 import {FileParser} from "../../file-parser";
 import {IFileParser} from "../../file-parser.interface";
+import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
 
 export class TypescriptClassParser extends FileParser {
 
     private isProcessingClass = false;
     private processingFinished = false;
 
-    constructor(protected lineParser: TypeScriptLineParser, private classParsers: Array<IFileParser>) {
+    constructor(protected lineParser: TypeScriptLineParser, private classParsers: Array<IFileParser>,
+                private reporter: TypeScriptClassReporter) {
         super(lineParser);
     }
 
@@ -37,6 +39,7 @@ export class TypescriptClassParser extends FileParser {
 
     private checkWhetherLineContainsClass(line) {
         if (this.lineParser.hasClassDefinition(line)) {
+            this.reporter.setClassName(this.lineParser.getClassNameFromLine(line));
             this.startClassProcessing();
         }
     }

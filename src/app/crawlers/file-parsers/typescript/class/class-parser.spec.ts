@@ -7,6 +7,8 @@ import * as chaiAsPromised from 'chai-as-promised';
 import {MoreThanOneClassError, TypescriptClassParser} from "./class-parser";
 import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
 import {IFileParser} from "../../file-parser.interface";
+import {IReporter} from "../../../reporters/reporter.interface";
+import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -17,6 +19,7 @@ describe('Typescript Class Parser', () => {
     let lineParser: TypeScriptLineParser;
     let classParsers: Array<IFileParser>;
     let fileParser: IFileParser;
+    let reporter;
 
     beforeEach((() => {
         lineParser = new TypeScriptLineParser();
@@ -24,8 +27,11 @@ describe('Typescript Class Parser', () => {
             readLine: sinon.spy(),
             start: sinon.spy()
         };
+        reporter = {
+            setClassName: sinon.spy()
+        };
         classParsers = [fileParser];
-        classParser = new TypescriptClassParser(lineParser, classParsers);
+        classParser = new TypescriptClassParser(lineParser, classParsers, reporter);
         classParser.start('someFile.ts');
     }));
 
@@ -48,6 +54,14 @@ describe('Typescript Class Parser', () => {
         classParser.readLine('bleblelble');
 
         expect(fileParser.start).to.have.been.calledOnce;
+    });
+
+    it('should set class name to the reporter if line contains class definition', () => {
+        classParser.readLine('blublub');
+        classParser.readLine('class FooBarBaz {');
+        classParser.readLine('bleblelble');
+
+        expect(reporter.setClassName).to.have.been.calledWith('FooBarBaz');
     });
 
     it('should throw error if line contains more than 1 class definition', () => {
