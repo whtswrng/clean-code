@@ -2,7 +2,8 @@ import {FileCrawler} from "./file-crawler";
 import {LineReader} from "./line-readers/line-reader";
 import {TypeScriptFileReporter} from "./reporters/reporter";
 import {TypeScriptLineParser} from "./line-validators/type-script-line-parser";
-import {TypescriptMethodCounterParser} from "./file-parsers/typescript/method-counter/method-counter";
+import {TypescriptMethodCounterParser} from "./file-parsers/typescript/method-counter/method-counter-parser";
+import {TypescriptClassParser} from "./file-parsers/typescript/class/class-parser";
 
 export class TypeScriptFileCrawlerFactory {
 
@@ -18,7 +19,10 @@ export class TypeScriptFileCrawlerFactory {
 
     private initFileParsers(fileCrawler: FileCrawler): void {
         const lineParser = new TypeScriptLineParser();
+        const classParser = new TypescriptClassParser(lineParser, [
+            new TypescriptMethodCounterParser(this.fileReporter, lineParser)
+        ]);
 
-        fileCrawler.addFileParser(new TypescriptMethodCounterParser(this.fileReporter, lineParser));
+        fileCrawler.addFileParser(classParser);
     }
 }

@@ -19,7 +19,7 @@ class FileDeterminer {
     isFile(filePath) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.lsStatPromisified(filePath);
-            return result.isDirectory();
+            return result.isFile();
         });
     }
     lsStatPromisified(path) {

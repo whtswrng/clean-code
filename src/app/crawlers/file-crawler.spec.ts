@@ -32,14 +32,12 @@ describe("File Crawler", () => {
         const sandbox = sinon.sandbox.create();
         const startSpy = sandbox.spy(fileParser, 'start');
         const readLineSpy = sandbox.spy(fileParser, 'readLine');
-        const stopSpy = sandbox.spy(fileParser, 'stop');
 
         fileCrawler.addFileParser(fileParser);
         await fileCrawler.start();
 
         sinon.assert.calledOnce(startSpy);
         sinon.assert.called(readLineSpy);
-        sinon.assert.calledOnce(stopSpy);
         sandbox.restore();
     });
 

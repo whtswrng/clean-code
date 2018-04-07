@@ -1,8 +1,9 @@
 export const METHOD_START_REGEXP = /([a-zA-Z]\w+)\(.*\).*{/g;
 export const START_BRACES = /{/g;
-export const END_BRACES = /}/g;
+export const END_BRACKET = /}/g;
 export const MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
 export const ES6_CALLBACK = /=>\s*{/g;
+export const CLASS_DEFINITION = /class\s+\w+/g;
 
 export class TypeScriptLineParser {
 
@@ -14,8 +15,8 @@ export class TypeScriptLineParser {
         return !!line.match(START_BRACES);
     }
 
-    public hasEndBraces(line: string): boolean {
-        return !!line.match(END_BRACES);
+    public hasEndBracket(line: string): boolean {
+        return !!line.match(END_BRACKET);
     }
 
     public hasFunctionMoreThanThreeArguments(line: string): boolean {
@@ -26,4 +27,7 @@ export class TypeScriptLineParser {
         return !!line.match(ES6_CALLBACK);
     }
 
+    public hasClassDefinition(line: string): boolean {
+        return !!line.match(CLASS_DEFINITION);
+    }
 }

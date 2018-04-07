@@ -24,7 +24,7 @@ class FileParser {
             this.nestingCount++;
             this.shouldIncrementNestingCount = false;
         }
-        if (this.lineParser.hasEndBraces(line)) {
+        if (this.lineParser.hasEndBracket(line)) {
             this.nestingCount--;
         }
     }

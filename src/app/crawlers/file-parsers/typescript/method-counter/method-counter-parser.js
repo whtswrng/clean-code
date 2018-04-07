@@ -17,4 +17,4 @@ exports.TypescriptMethodCounterParser = TypescriptMethodCounterParser;
 exports.REPORTS = {
     FUNCTION_PARAMETERS_EXCEEDED: `More than ${config_1.config.MAX_FUNCTION_PARAMETERS_LENGTH} methods!`
 };
-//# sourceMappingURL=method-counter.js.map
+//# sourceMappingURL=method-counter-parser.js.map

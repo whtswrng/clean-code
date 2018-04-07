@@ -10,7 +10,6 @@ class TypescriptMethodParametersParser extends file_parser_1.FileParser {
     }
     readLine(line) {
         super.readLine(line);
-        console.log(line);
         if (this.lineParser.hasFunctionDefinition(line) && this.lineParser.hasFunctionMoreThanThreeArguments(line)) {
             this.reporter.report(exports.REPORTS.FUNCTION_PARAMETERS_EXCEEDED, this.filePath, this.lineNumber);
         }

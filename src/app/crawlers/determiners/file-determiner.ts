@@ -10,7 +10,7 @@ export class FileDeterminer implements IFileDeterminer {
 
     public async isFile(filePath: string): Promise<boolean> {
         const result = await this.lsStatPromisified(filePath);
-        return result.isDirectory();
+        return result.isFile();
     }
 
     private lsStatPromisified(path): Promise<any> {

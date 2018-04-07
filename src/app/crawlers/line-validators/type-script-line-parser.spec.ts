@@ -26,9 +26,9 @@ describe('Type Script Line Parser', () => {
     });
 
     it('should recognize nesting ending braces', () => {
-        expect(lineParser.hasEndBraces('};')).to.eq(true);
-        expect(lineParser.hasEndBraces('}')).to.eq(true);
-        expect(lineParser.hasEndBraces('{};')).to.eq(true);
+        expect(lineParser.hasEndBracket('};')).to.eq(true);
+        expect(lineParser.hasEndBracket('}')).to.eq(true);
+        expect(lineParser.hasEndBracket('{};')).to.eq(true);
     });
 
     it('should recognize more than 3 argument in function', () => {
