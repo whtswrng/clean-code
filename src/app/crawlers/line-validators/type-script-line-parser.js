@@ -5,7 +5,7 @@ exports.START_BRACES = /{/g;
 exports.END_BRACES = /}/g;
 exports.MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
 exports.ES6_CALLBACK = /=>\s*{/g;
-class TypeScriptLineValidator {
+class TypeScriptLineParser {
     hasFunctionDefinition(line) {
         return !!line.match(exports.METHOD_START_REGEXP);
     }
@@ -22,5 +22,5 @@ class TypeScriptLineValidator {
         return !!line.match(exports.ES6_CALLBACK);
     }
 }
-exports.TypeScriptLineValidator = TypeScriptLineValidator;
-//# sourceMappingURL=type-script-line-validator.js.map
+exports.TypeScriptLineParser = TypeScriptLineParser;
+//# sourceMappingURL=type-script-line-parser.js.map

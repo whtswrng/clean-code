@@ -14,7 +14,8 @@ startJourney();
 function startJourney() {
     const fileExtensionValidator = new FileExtensionValidator(includedFileExtensions, excludedFileExtensions);
     const fileSystemCrawler = new FileSystemCrawler(
-        crawlingPath, new TypeScriptFileCrawlerFactory(), fileExtensionValidator, new FileDeterminer(), new DirectoryCrawler()
+        crawlingPath, new TypeScriptFileCrawlerFactory(), fileExtensionValidator, new FileDeterminer(),
+        new DirectoryCrawler()
     );
 
     fileSystemCrawler.start();

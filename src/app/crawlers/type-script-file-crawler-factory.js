@@ -4,7 +4,7 @@ const file_crawler_1 = require("./file-crawler");
 const line_reader_1 = require("./line-readers/line-reader");
 const reporter_1 = require("./reporters/reporter");
 const method_parameters_parser_1 = require("./file-parsers/typescript/method-parameters-parser/method-parameters-parser");
-const type_script_line_validator_1 = require("./line-validators/type-script-line-validator");
+const type_script_line_parser_1 = require("./line-validators/type-script-line-parser");
 class TypeScriptFileCrawlerFactory {
     constructor() {
         this.fileReporter = new reporter_1.TypeScriptFileReporter();
@@ -15,7 +15,7 @@ class TypeScriptFileCrawlerFactory {
         return fileCrawler;
     }
     initFileParsers(fileCrawler) {
-        const lineParser = new type_script_line_validator_1.TypeScriptLineValidator();
+        const lineParser = new type_script_line_parser_1.TypeScriptLineParser();
         fileCrawler.addFileParser(new method_parameters_parser_1.TypescriptMethodParametersParser(this.fileReporter, lineParser));
     }
 }

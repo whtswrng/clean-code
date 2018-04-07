@@ -4,7 +4,7 @@ export const END_BRACES = /}/g;
 export const MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
 export const ES6_CALLBACK = /=>\s*{/g;
 
-export class LineValidator {
+export class TypeScriptLineParser {
 
     public hasFunctionDefinition(line: string): boolean {
         return !!line.match(METHOD_START_REGEXP);
