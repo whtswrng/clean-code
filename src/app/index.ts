@@ -1,6 +1,6 @@
 import {config, ExcludedFileExtensions, IncludedFileExtensions} from "../config";
 import {FileSystemCrawler} from "./crawlers/file-system-crawler";
-import {FileCrawlerFactory} from "./crawlers/file-crawler-factory";
+import {TypeScriptFileCrawlerFactory} from "./crawlers/type-script-file-crawler-factory";
 import {FileExtensionValidator} from "./crawlers/validators/file-extension-validator";
 import {FileDeterminer} from "./crawlers/determiners/file-determiner";
 import {DirectoryCrawler} from "./crawlers/directory-crawler";
@@ -14,7 +14,7 @@ startJourney();
 function startJourney() {
     const fileExtensionValidator = new FileExtensionValidator(includedFileExtensions, excludedFileExtensions);
     const fileSystemCrawler = new FileSystemCrawler(
-        crawlingPath, new FileCrawlerFactory(), fileExtensionValidator, new FileDeterminer(), new DirectoryCrawler()
+        crawlingPath, new TypeScriptFileCrawlerFactory(), fileExtensionValidator, new FileDeterminer(), new DirectoryCrawler()
     );
 
     fileSystemCrawler.start();

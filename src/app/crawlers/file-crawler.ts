@@ -1,11 +1,12 @@
 import {IFileParser} from "./file-parsers/file-parser.interface";
 import {ILineReader} from "./line-readers/line-reader.interface";
+import {IReporter} from "./reporters/reporter.interface";
 
 export class FileCrawler {
 
     private fileParsers: Array<IFileParser> = [];
 
-    constructor(private path: string, private lineReader: ILineReader) {
+    constructor(private path: string, private lineReader: ILineReader, private reporter: IReporter) {
 
     }
 
@@ -35,6 +36,7 @@ export class FileCrawler {
 
     private stopLineReading(resolve): void {
         this.fileParsers.forEach((fileParser: IFileParser) => fileParser.stop());
+        this.reporter.print();
         resolve();
     }
 }

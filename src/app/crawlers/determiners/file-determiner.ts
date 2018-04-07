@@ -16,7 +16,7 @@ export class FileDeterminer implements IFileDeterminer {
     private lsStatPromisified(path): Promise<any> {
         return new Promise((resolve, reject) => {
             fs.lstat(path, (err, result) => {
-                if(err) {
+                if (err) {
                     return reject(err);
                 }
 
