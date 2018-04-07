@@ -3,7 +3,7 @@ import {TypeScriptLineParser} from "../../../line-validators/type-script-line-pa
 import {config} from "../../../../../config";
 import {FileParser} from "../../file-parser";
 
-export class TypescriptMethodParametersParser extends FileParser {
+export class TypescriptMethodCounterParser extends FileParser {
 
     constructor(private reporter: IReporter, protected lineParser: TypeScriptLineParser) {
         super(lineParser);
@@ -12,9 +12,6 @@ export class TypescriptMethodParametersParser extends FileParser {
     public readLine(line) {
         super.readLine(line);
         console.log(line);
-        if(this.lineParser.hasFunctionDefinition(line) && this.lineParser.hasFunctionMoreThanThreeArguments(line)) {
-            this.reporter.report(REPORTS.FUNCTION_PARAMETERS_EXCEEDED, this.filePath, this.lineNumber);
-        }
     }
 
 }

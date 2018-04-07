@@ -28,8 +28,6 @@ class FileParser {
             this.nestingCount--;
         }
     }
-    stop() {
-    }
 }
 exports.FileParser = FileParser;
 //# sourceMappingURL=file-parser.js.map

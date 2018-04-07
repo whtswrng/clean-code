@@ -38,7 +38,4 @@ export class FileParser implements IFileParser {
         }
     }
 
-    stop(): void {
-    }
-
 }

@@ -35,7 +35,6 @@ export class FileCrawler {
     }
 
     private stopLineReading(resolve): void {
-        this.fileParsers.forEach((fileParser: IFileParser) => fileParser.stop());
         this.reporter.print();
         resolve();
     }
