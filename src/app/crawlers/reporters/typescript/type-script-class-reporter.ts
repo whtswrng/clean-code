@@ -1,19 +1,24 @@
 import {IReporter} from "../reporter.interface";
+import {Table} from "../../printers/table-printer";
 
-export class TypeScriptClassReporter implements IReporter{
+export class TypeScriptClassReporter implements IReporter {
 
     private privateMethodsCount = 0;
     private publicMethodsCount = 0;
     private className: string;
 
-    constructor() {
+    constructor(private table: Table) {
 
     }
 
     public print(): void {
-        console.log(`Stats for class ${this.className}`);
-        console.log(`Private methods count: ${this.privateMethodsCount}`);
-        console.log(`Public methods count: ${this.publicMethodsCount}`);
+        this.table.push(
+            {[this.className]: ''},
+            [],
+            {'Private methods': this.privateMethodsCount},
+            {'Public methods': this.publicMethodsCount}
+        );
+        console.log(this.table.toString());
     }
 
     public reportPrivateMethod() {

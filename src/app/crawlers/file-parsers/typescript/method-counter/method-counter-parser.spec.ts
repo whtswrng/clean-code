@@ -23,7 +23,7 @@ describe('Typescript Method Counter Parser', () => {
             print: sinon.spy(),
             reportPrivateMethod: sinon.spy(),
             reportPublicMethod: sinon.spy()
-        };
+        } as any;
         lineParser = new TypeScriptLineParser();
         methodCounterParser = new TypescriptMethodCounterParser(reporter, lineParser);
         methodCounterParser.start('foo');
@@ -47,6 +47,28 @@ describe('Typescript Method Counter Parser', () => {
         methodCounterParser.readLine('foo');
         methodCounterParser.readLine('const blouf = 434;');
         methodCounterParser.readLine('private foo() {');
+        methodCounterParser.readLine('}');
+        methodCounterParser.readLine('private foo    () {');
+        methodCounterParser.readLine('}');
+        methodCounterParser.readLine('const = () => {');
+
+        expect(reporter.reportPrivateMethod).to.have.been.calledTwice;
+    });
+
+    it('should report private method', () => {
+        methodCounterParser.readLine('private foo() {');
+        methodCounterParser.readLine('  if (a > 10) {');
+        methodCounterParser.readLine('      sum(44);');
+        methodCounterParser.readLine('  }');
+        methodCounterParser.readLine('}');
+
+        expect(reporter.reportPrivateMethod).to.have.been.calledOnce;
+    });
+
+    it('should report explicit private method which is longer than 1 line', () => {
+        methodCounterParser.readLine('foo');
+        methodCounterParser.readLine('const blouf = 434;');
+        methodCounterParser.readLine('private foo(blub: Jajaja, another: any');
         methodCounterParser.readLine('const = () => {');
 
         expect(reporter.reportPrivateMethod).to.have.been.calledOnce;
@@ -70,16 +92,50 @@ describe('Typescript Method Counter Parser', () => {
         expect(reporter.reportPrivateMethod).to.have.been.calledOnce;
     });
 
-    it('should report public method', () => {
+    it('should report explicit public method and ignore content', () => {
+        methodCounterParser.readLine('public foo() {');
+        methodCounterParser.readLine('  if (a > 10) {');
+        methodCounterParser.readLine('      sum(44);');
+        methodCounterParser.readLine('  }');
+        methodCounterParser.readLine('}');
+
+        expect(reporter.reportPublicMethod).to.have.been.calledOnce;
+    });
+
+    it('should ignore constructor', () => {
+        methodCounterParser.readLine('constructor() {');
+        methodCounterParser.readLine('  if (a > 10) {');
+        methodCounterParser.readLine('      sum(44);');
+        methodCounterParser.readLine('  }');
+        methodCounterParser.readLine('}');
+
+        expect(reporter.reportPublicMethod).not.to.have.been.called;
+    });
+
+    it('should report explicit public method', () => {
         methodCounterParser.readLine('foo');
         methodCounterParser.readLine('const blouf = 434;');
         methodCounterParser.readLine('public foo() {');
+        methodCounterParser.readLine('}');
+        methodCounterParser.readLine('public foo  () {');
+        methodCounterParser.readLine('}');
+        methodCounterParser.readLine('  public foo  () {');
+        methodCounterParser.readLine('}');
+        methodCounterParser.readLine('const = () => {');
+
+        expect(reporter.reportPublicMethod).to.have.been.calledThrice;
+    });
+
+    it('should report explicit public method which is longer than 1 line', () => {
+        methodCounterParser.readLine('foo');
+        methodCounterParser.readLine('const blouf = 434;');
+        methodCounterParser.readLine('public foo(blub: Jajaja, another: any');
         methodCounterParser.readLine('const = () => {');
 
         expect(reporter.reportPublicMethod).to.have.been.calledOnce;
     });
 
-    it('should report public ASYNC method', () => {
+    it('should report explicit public ASYNC method', () => {
         methodCounterParser.readLine('foo');
         methodCounterParser.readLine('const blouf = 434;');
         methodCounterParser.readLine('public async bleb() {');
@@ -88,7 +144,7 @@ describe('Typescript Method Counter Parser', () => {
         expect(reporter.reportPublicMethod).to.have.been.calledOnce;
     });
 
-    it('should report public ASYNC method with arguments', () => {
+    it('should report explicit public ASYNC method with arguments', () => {
         methodCounterParser.readLine('foo');
         methodCounterParser.readLine('const blouf = 434;');
         methodCounterParser.readLine('public async bleb(bar, blub, jep) {');
@@ -96,4 +152,23 @@ describe('Typescript Method Counter Parser', () => {
 
         expect(reporter.reportPublicMethod).to.have.been.calledOnce;
     });
+
+    it('should report implicit public method', () => {
+        methodCounterParser.readLine('foo');
+        methodCounterParser.readLine('const blouf = 434;');
+        methodCounterParser.readLine('foo() {');
+        methodCounterParser.readLine('const = () => {');
+
+        expect(reporter.reportPublicMethod).to.have.been.calledOnce;
+    });
+
+    it('should NOT report public method', () => {
+        methodCounterParser.readLine('const fofo = () => {');
+        methodCounterParser.readLine('const blouf = 434;');
+        methodCounterParser.readLine('function foo() {');
+        methodCounterParser.readLine('private blub() {');
+
+        expect(reporter.reportPublicMethod).not.to.have.been.called;
+    });
+
 });

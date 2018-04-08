@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class TypeScriptClassReporter {
-    constructor() {
+    constructor(table) {
+        this.table = table;
         this.privateMethodsCount = 0;
         this.publicMethodsCount = 0;
     }
     print() {
-        console.log(`Stats for class ${this.className}`);
-        console.log(`Private methods count: ${this.privateMethodsCount}`);
-        console.log(`Public methods count: ${this.publicMethodsCount}`);
+        this.table.push({ [this.className]: '' }, [], { 'Private methods': this.privateMethodsCount }, { 'Public methods': this.publicMethodsCount });
+        console.log(this.table.toString());
     }
     reportPrivateMethod() {
         this.privateMethodsCount++;

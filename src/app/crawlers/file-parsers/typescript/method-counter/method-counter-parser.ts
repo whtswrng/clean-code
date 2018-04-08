@@ -11,10 +11,10 @@ export class TypescriptMethodCounterParser extends FileParser {
     public readLine(line) {
         super.readLine(line);
 
-        if(this.lineParser.hasPrivateMethodDefinition(line)) {
+        if(this.nestingCount === 0 && this.lineParser.hasPrivateMethodDefinition(line)) {
             this.reporter.reportPrivateMethod();
         }
-        if(this.lineParser.hasPublicMethodDefinition(line)) {
+        if(this.nestingCount === 0 && this.lineParser.hasPublicMethodDefinition(line)) {
             this.reporter.reportPublicMethod();
         }
     }

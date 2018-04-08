@@ -4,10 +4,15 @@ import {TypeScriptLineParser} from "./line-validators/type-script-line-parser";
 import {TypescriptMethodCounterParser} from "./file-parsers/typescript/method-counter/method-counter-parser";
 import {TypescriptClassParser} from "./file-parsers/typescript/class/class-parser";
 import {TypeScriptClassReporter} from "./reporters/typescript/type-script-class-reporter";
+import {Table} from "./printers/table-printer";
 
 export class TypeScriptFileCrawlerFactory {
 
-    private fileReporter = new TypeScriptClassReporter();
+    private fileReporter: TypeScriptClassReporter;
+
+    constructor(private table: Table) {
+        this.fileReporter = new TypeScriptClassReporter(table);
+    }
 
     public instantiate(path): FileCrawler {
         const fileCrawler = new FileCrawler(path, new LineReader(path), this.fileReporter);

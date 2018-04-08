@@ -7,8 +7,9 @@ const method_counter_parser_1 = require("./file-parsers/typescript/method-counte
 const class_parser_1 = require("./file-parsers/typescript/class/class-parser");
 const type_script_class_reporter_1 = require("./reporters/typescript/type-script-class-reporter");
 class TypeScriptFileCrawlerFactory {
-    constructor() {
-        this.fileReporter = new type_script_class_reporter_1.TypeScriptClassReporter();
+    constructor(table) {
+        this.table = table;
+        this.fileReporter = new type_script_class_reporter_1.TypeScriptClassReporter(table);
     }
     instantiate(path) {
         const fileCrawler = new file_crawler_1.FileCrawler(path, new line_reader_1.LineReader(path), this.fileReporter);
