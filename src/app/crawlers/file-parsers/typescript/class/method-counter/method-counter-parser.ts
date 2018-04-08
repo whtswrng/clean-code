@@ -1,6 +1,6 @@
-import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
-import {FileParser} from "../../file-parser";
-import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
+import {FileParser} from "../../../file-parser";
+import {TypeScriptClassReporter} from "../../../../reporters/typescript/type-script-class-reporter";
+import {TypeScriptLineParser} from "../../../../line-validators/type-script-line-parser";
 
 export class TypescriptMethodCounterParser extends FileParser {
 

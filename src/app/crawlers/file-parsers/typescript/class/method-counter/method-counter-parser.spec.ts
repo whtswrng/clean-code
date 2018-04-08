@@ -5,9 +5,8 @@ import * as chai from 'chai';
 import * as sinonChai from 'sinon-chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {TypescriptMethodCounterParser} from "./method-counter-parser";
-import {IReporter} from "../../../reporters/reporter.interface";
-import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
-import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
+import {TypeScriptClassReporter} from "../../../../reporters/typescript/type-script-class-reporter";
+import {TypeScriptLineParser} from "../../../../line-validators/type-script-line-parser";
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);

@@ -1,17 +1,19 @@
 import {FileCrawler} from "./file-crawler";
 import {LineReader} from "./line-readers/line-reader";
 import {TypeScriptLineParser} from "./line-validators/type-script-line-parser";
-import {TypescriptMethodCounterParser} from "./file-parsers/typescript/method-counter/method-counter-parser";
 import {TypescriptClassParser} from "./file-parsers/typescript/class/class-parser";
 import {TypeScriptClassReporter} from "./reporters/typescript/type-script-class-reporter";
 import {Table} from "./printers/table-printer";
+import {TypescriptMethodCounterParser} from "./file-parsers/typescript/class/method-counter/method-counter-parser";
+import {TypescriptMethodLineParser} from "./file-parsers/typescript/class/method-line/method-line-parser";
+import {TableFormatter} from "./table-formatters/table-formatter";
 
 export class TypeScriptFileCrawlerFactory {
 
     private fileReporter: TypeScriptClassReporter;
 
-    constructor(private table: Table) {
-        this.fileReporter = new TypeScriptClassReporter(table);
+    constructor(table: Table, tableFormatter: TableFormatter) {
+        this.fileReporter = new TypeScriptClassReporter(table, tableFormatter);
     }
 
     public instantiate(path): FileCrawler {
@@ -25,7 +27,8 @@ export class TypeScriptFileCrawlerFactory {
     private initFileParsers(fileCrawler: FileCrawler): void {
         const lineParser = new TypeScriptLineParser();
         const classParser = new TypescriptClassParser(lineParser, [
-            new TypescriptMethodCounterParser(this.fileReporter, lineParser)
+            new TypescriptMethodCounterParser(this.fileReporter, lineParser),
+            new TypescriptMethodLineParser(this.fileReporter, lineParser)
         ], this.fileReporter);
 
         fileCrawler.addFileParser(classParser);

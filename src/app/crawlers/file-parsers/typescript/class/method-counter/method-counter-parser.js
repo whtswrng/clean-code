@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const file_parser_1 = require("../../file-parser");
+const file_parser_1 = require("../../../file-parser");
 class TypescriptMethodCounterParser extends file_parser_1.FileParser {
     constructor(reporter, lineParser) {
         super(lineParser);
