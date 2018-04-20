@@ -38,4 +38,6 @@ export class FileParser implements IFileParser {
         }
     }
 
+    public stop(): void {
+    }
 }

@@ -7,6 +7,8 @@ const class_parser_1 = require("./file-parsers/typescript/class/class-parser");
 const type_script_class_reporter_1 = require("./reporters/typescript/type-script-class-reporter");
 const method_counter_parser_1 = require("./file-parsers/typescript/class/method-counter/method-counter-parser");
 const method_line_parser_1 = require("./file-parsers/typescript/class/method-line/method-line-parser");
+const class_line_parser_1 = require("./file-parsers/typescript/class/class-line/class-line-parser");
+const class_import_counter_parser_1 = require("./file-parsers/typescript/class/class-import-counter/class-import-counter-parser");
 class TypeScriptFileCrawlerFactory {
     constructor(table, tableFormatter) {
         this.fileReporter = new type_script_class_reporter_1.TypeScriptClassReporter(table, tableFormatter);
@@ -19,10 +21,12 @@ class TypeScriptFileCrawlerFactory {
     initFileParsers(fileCrawler) {
         const lineParser = new type_script_line_parser_1.TypeScriptLineParser();
         const classParser = new class_parser_1.TypescriptClassParser(lineParser, [
+            new class_line_parser_1.TypescriptClassLineParser(this.fileReporter, lineParser),
             new method_counter_parser_1.TypescriptMethodCounterParser(this.fileReporter, lineParser),
-            new method_line_parser_1.TypescriptMethodLineParser(this.fileReporter, lineParser)
+            new method_line_parser_1.TypescriptMethodLineParser(this.fileReporter, lineParser),
         ], this.fileReporter);
         fileCrawler.addFileParser(classParser);
+        fileCrawler.addFileParser(new class_import_counter_parser_1.TypescriptClassImportCounterParser(this.fileReporter, lineParser));
     }
 }
 exports.TypeScriptFileCrawlerFactory = TypeScriptFileCrawlerFactory;

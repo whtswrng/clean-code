@@ -7,6 +7,8 @@ import {Table} from "./printers/table-printer";
 import {TypescriptMethodCounterParser} from "./file-parsers/typescript/class/method-counter/method-counter-parser";
 import {TypescriptMethodLineParser} from "./file-parsers/typescript/class/method-line/method-line-parser";
 import {TableFormatter} from "./table-formatters/table-formatter";
+import {TypescriptClassLineParser} from "./file-parsers/typescript/class/class-line/class-line-parser";
+import {TypescriptClassImportCounterParser} from "./file-parsers/typescript/class/class-import-counter/class-import-counter-parser";
 
 export class TypeScriptFileCrawlerFactory {
 
@@ -27,10 +29,12 @@ export class TypeScriptFileCrawlerFactory {
     private initFileParsers(fileCrawler: FileCrawler): void {
         const lineParser = new TypeScriptLineParser();
         const classParser = new TypescriptClassParser(lineParser, [
+            new TypescriptClassLineParser(this.fileReporter, lineParser),
             new TypescriptMethodCounterParser(this.fileReporter, lineParser),
-            new TypescriptMethodLineParser(this.fileReporter, lineParser)
+            new TypescriptMethodLineParser(this.fileReporter, lineParser),
         ], this.fileReporter);
 
         fileCrawler.addFileParser(classParser);
+        fileCrawler.addFileParser(new TypescriptClassImportCounterParser(this.fileReporter, lineParser));
     }
 }

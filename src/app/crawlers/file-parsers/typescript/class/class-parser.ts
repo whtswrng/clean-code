@@ -17,14 +17,14 @@ export class TypescriptClassParser extends FileParser {
         super.readLine(line);
         this.processEndOfClass(line);
         this.processLineIfNecessary(line);
-        this.checkWhetherLineContainsClass(line);
+        this.processStartOfClass(line);
     }
 
     private processEndOfClass(line: string): void {
         if(this.isProcessingClass && this.isEndOfTheClass(line)) {
+            this.stopClassProcessing();
             this.processingFinished = true;
         }
-
     }
 
     private isEndOfTheClass(line: string): boolean {
@@ -37,14 +37,14 @@ export class TypescriptClassParser extends FileParser {
         }
     }
 
-    private checkWhetherLineContainsClass(line) {
+    private processStartOfClass(line): void {
         if (this.lineParser.hasClassDefinition(line)) {
-            this.reporter.setClassName(this.lineParser.getClassNameFromLine(line));
+            this.reporter.setClassName(this.lineParser.getClassName(line));
             this.startClassProcessing();
         }
     }
 
-    private startClassProcessing() {
+    private startClassProcessing(): void {
         if (this.isProcessingClass) {
             throw new MoreThanOneClassError('2 classes in 1 file are not allowed!');
         } else {
@@ -53,7 +53,12 @@ export class TypescriptClassParser extends FileParser {
         }
     }
 
-    private propagateLineToAllParsers(line) {
+    private stopClassProcessing(): void {
+        this.classParsers.forEach((classParser) => classParser.stop());
+    }
+
+
+    private propagateLineToAllParsers(line): void {
         this.classParsers.forEach((classParser) => classParser.readLine(line));
     }
 }

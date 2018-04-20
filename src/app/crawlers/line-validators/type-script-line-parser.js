@@ -8,6 +8,8 @@ exports.ES6_CALLBACK = /=>\s*{/g;
 exports.CLASS_DEFINITION = /class\s+(\w+)/g;
 exports.PRIVATE_METHOD_DEFINITION = /private\s+(\w+\s)?\w+\s*\(.*/g;
 exports.PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|constructor)(public\s+)?(\w+\s)?\w+\s*\(.*/g;
+exports.IMPORT_STATEMENT = /^\s*import.+/g;
+exports.IMPORT_STATEMENT_WITH_CLASSES = /^\s*import\s+{(.+)}.+/g;
 class TypeScriptLineParser {
     hasFunctionDefinition(line) {
         return !!line.match(exports.METHOD_START_REGEXP);
@@ -33,9 +35,22 @@ class TypeScriptLineParser {
     hasPublicMethodDefinition(line) {
         return !!line.match(exports.PUBLIC_METHOD_DEFINITION);
     }
-    getClassNameFromLine(line) {
-        const match = exports.CLASS_DEFINITION.exec(line);
+    getClassName(line) {
+        const match = new RegExp(exports.CLASS_DEFINITION).exec(line);
         return match[1];
+    }
+    getDependencyCountFromImportLine(line) {
+        const match = new RegExp(exports.IMPORT_STATEMENT_WITH_CLASSES).exec(line);
+        const importClassesGroup = match && match[1];
+        if (importClassesGroup) {
+            return importClassesGroup.split(',').length;
+        }
+        else {
+            return 1;
+        }
+    }
+    hasImportStatement(line) {
+        return !!line.match(exports.IMPORT_STATEMENT);
     }
 }
 exports.TypeScriptLineParser = TypeScriptLineParser;

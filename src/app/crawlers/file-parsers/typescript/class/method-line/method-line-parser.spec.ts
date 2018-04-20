@@ -20,7 +20,7 @@ describe('Typescript Method Line Parser', () => {
     beforeEach((() => {
         reporter = {
             print: sinon.spy(),
-            addMethodLineCount: sinon.spy()
+            reportMethodLineCount: sinon.spy()
         } as any;
         lineParser = new TypeScriptLineParser();
         methodLineParser = new TypescriptMethodLineParser(reporter, lineParser);
@@ -38,7 +38,7 @@ describe('Typescript Method Line Parser', () => {
         methodLineParser.readLine('foo()');
         methodLineParser.readLine('}');
 
-        expect(reporter.addMethodLineCount).to.have.been.calledWith(2);
+        expect(reporter.reportMethodLineCount).to.have.been.calledWith(2);
     });
 
     it('should report lines count for 2 methods', () => {
@@ -50,9 +50,9 @@ describe('Typescript Method Line Parser', () => {
         methodLineParser.readLine('foo()');
         methodLineParser.readLine('}');
 
-        expect(reporter.addMethodLineCount).to.have.been.calledWith(2);
-        expect(reporter.addMethodLineCount).to.have.been.calledWith(1);
-        expect(reporter.addMethodLineCount).to.have.been.calledTwice;
+        expect(reporter.reportMethodLineCount).to.have.been.calledWith(2);
+        expect(reporter.reportMethodLineCount).to.have.been.calledWith(1);
+        expect(reporter.reportMethodLineCount).to.have.been.calledTwice;
     });
 
 });

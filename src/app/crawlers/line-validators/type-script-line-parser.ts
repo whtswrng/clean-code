@@ -6,6 +6,8 @@ export const ES6_CALLBACK = /=>\s*{/g;
 export const CLASS_DEFINITION = /class\s+(\w+)/g;
 export const PRIVATE_METHOD_DEFINITION = /private\s+(\w+\s)?\w+\s*\(.*/g;
 export const PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|constructor)(public\s+)?(\w+\s)?\w+\s*\(.*/g;
+export const IMPORT_STATEMENT = /^\s*import.+/g;
+export const IMPORT_STATEMENT_WITH_CLASSES = /^\s*import\s+{(.+)}.+/g;
 
 export class TypeScriptLineParser {
 
@@ -41,8 +43,23 @@ export class TypeScriptLineParser {
         return !!line.match(PUBLIC_METHOD_DEFINITION);
     }
 
-    public getClassNameFromLine(line: any): string {
-        const match = CLASS_DEFINITION.exec(line);
+    public getClassName(line: string): string {
+        const match = new RegExp(CLASS_DEFINITION).exec(line);
         return match[1];
+    }
+
+    public getDependencyCountFromImportLine(line: string): number {
+        const match = new RegExp(IMPORT_STATEMENT_WITH_CLASSES).exec(line);
+        const importClassesGroup = match && match[1];
+
+        if(importClassesGroup) {
+            return importClassesGroup.split(',').length;
+        } else {
+            return 1;
+        }
+    }
+
+    public hasImportStatement(line: string): boolean {
+        return !!line.match(IMPORT_STATEMENT);
     }
 }

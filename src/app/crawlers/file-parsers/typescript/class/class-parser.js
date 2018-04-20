@@ -14,10 +14,11 @@ class TypescriptClassParser extends file_parser_1.FileParser {
         super.readLine(line);
         this.processEndOfClass(line);
         this.processLineIfNecessary(line);
-        this.checkWhetherLineContainsClass(line);
+        this.processStartOfClass(line);
     }
     processEndOfClass(line) {
         if (this.isProcessingClass && this.isEndOfTheClass(line)) {
+            this.stopClassProcessing();
             this.processingFinished = true;
         }
     }
@@ -29,9 +30,9 @@ class TypescriptClassParser extends file_parser_1.FileParser {
             this.propagateLineToAllParsers(line);
         }
     }
-    checkWhetherLineContainsClass(line) {
+    processStartOfClass(line) {
         if (this.lineParser.hasClassDefinition(line)) {
-            this.reporter.setClassName(this.lineParser.getClassNameFromLine(line));
+            this.reporter.setClassName(this.lineParser.getClassName(line));
             this.startClassProcessing();
         }
     }
@@ -43,6 +44,9 @@ class TypescriptClassParser extends file_parser_1.FileParser {
             this.classParsers.forEach((classParser) => classParser.start(this.filePath));
             this.isProcessingClass = true;
         }
+    }
+    stopClassProcessing() {
+        this.classParsers.forEach((classParser) => classParser.stop());
     }
     propagateLineToAllParsers(line) {
         this.classParsers.forEach((classParser) => classParser.readLine(line));

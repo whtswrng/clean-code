@@ -7,8 +7,6 @@ import * as chaiAsPromised from 'chai-as-promised';
 import {MoreThanOneClassError, TypescriptClassParser} from "./class-parser";
 import {TypeScriptLineParser} from "../../../line-validators/type-script-line-parser";
 import {IFileParser} from "../../file-parser.interface";
-import {IReporter} from "../../../reporters/reporter.interface";
-import {TypeScriptClassReporter} from "../../../reporters/typescript/type-script-class-reporter";
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -25,7 +23,8 @@ describe('Typescript Class Parser', () => {
         lineParser = new TypeScriptLineParser();
         fileParser = {
             readLine: sinon.spy(),
-            start: sinon.spy()
+            start: sinon.spy(),
+            stop: sinon.spy()
         };
         reporter = {
             setClassName: sinon.spy()
@@ -54,6 +53,22 @@ describe('Typescript Class Parser', () => {
         classParser.readLine('bleblelble');
 
         expect(fileParser.start).to.have.been.calledOnce;
+    });
+
+    it('should NOT call stop on the file parser if line does not contains ending class bracket', () => {
+        classParser.readLine('blublub');
+        classParser.readLine('class Foo {');
+        classParser.readLine('bleblelble');
+
+        expect(fileParser.stop).not.to.have.been.called;
+    });
+
+    it('should call stop on the file parser if line contains ending class bracket', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  bleblelble');
+        classParser.readLine('}');
+
+        expect(fileParser.stop).to.have.been.calledOnce;
     });
 
     it('should set class name to the reporter if line contains class definition', () => {

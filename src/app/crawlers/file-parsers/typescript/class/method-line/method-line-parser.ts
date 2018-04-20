@@ -23,7 +23,7 @@ export class TypescriptMethodLineParser extends FileParser {
         }
 
         if (this.isEndOfProcessingFunction(line)) {
-            this.reporter.addMethodLineCount(this.lineCount);
+            this.reporter.reportMethodLineCount(this.lineCount);
             this.isProcessing = false;
             this.lineCount = 0;
         }
