@@ -98,7 +98,7 @@ describe("Method Line Count Parser", () => {
         const reportSpy = sandbox.spy(reporter, 'report');
 
         const functionWithBunchOfLines = [
-            'public async start(): Promise<void> {',
+            'public async process(): Promise<void> {',
             'if (await this.fileDeterminer.isDirectory(this.path)) {',
             'return this.parseRecursiveFolder(this.path);',
             '} else if (await this.fileDeterminer.isFile(this.path)) {',

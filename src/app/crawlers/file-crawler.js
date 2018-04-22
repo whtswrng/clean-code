@@ -9,22 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class FileCrawler {
-    constructor(path, lineReader, reporter) {
+    constructor(path, lineReader, scoreCounter, table) {
         this.path = path;
         this.lineReader = lineReader;
-        this.reporter = reporter;
+        this.scoreCounter = scoreCounter;
+        this.table = table;
         this.fileParsers = [];
     }
     addFileParser(fileParser) {
         this.fileParsers.push(fileParser);
     }
-    start() {
+    process() {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve) => {
                 this.startParsing();
                 this.addListenersForFileCrawling(resolve);
             });
         });
+    }
+    getScore() {
+        return this.scoreCounter.count();
+    }
+    printReport() {
+        return this.table.print();
     }
     startParsing() {
         this.fileParsers.forEach((fileParser) => fileParser.start(this.path));
@@ -34,11 +41,16 @@ class FileCrawler {
         this.lineReader.addListener('close', () => this.stopLineReading(resolve));
     }
     readLine(line) {
-        this.fileParsers.forEach((fileParser) => fileParser.readLine(line));
+        this.fileParsers.forEach((fileParser) => {
+            try {
+                fileParser.readLine(line);
+            }
+            catch (e) {
+            }
+        });
     }
     stopLineReading(resolve) {
         this.fileParsers.forEach((fileParser) => fileParser.stop());
-        this.reporter.print();
         resolve();
     }
 }

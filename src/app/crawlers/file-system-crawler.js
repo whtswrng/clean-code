@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
+const dummy_file_crawler_1 = require("./dummy-file-crawler");
 class FileSystemCrawler {
     constructor(path, fileCrawlerFactory, fileExtensionValidator, fileDeterminer, directoryCrawler) {
         this.path = path;
@@ -23,23 +23,44 @@ class FileSystemCrawler {
                 return this.parseRecursiveFolder(this.path);
             }
             else if (yield this.fileDeterminer.isFile(this.path)) {
-                return this.parseFile(this.path);
+                const fileCrawler = yield this.parseFile(this.path);
+                fileCrawler.printReport();
             }
         });
     }
     parseRecursiveFolder(path) {
         return __awaiter(this, void 0, void 0, function* () {
             const files = yield this.directoryCrawler.recursive(path);
-            yield Promise.all(_.map(files, (file) => this.parseFile(file)));
+            let fileCrawlers = yield this.parseFiles(files);
+            this.printCrawlersReport(fileCrawlers);
         });
     }
     parseFile(path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.fileExtensionValidator.hasCorrectFileExtension(path)) {
                 const fileCrawler = this.fileCrawlerFactory.instantiate(path);
-                return fileCrawler.start();
+                yield fileCrawler.process();
+                return fileCrawler;
+            }
+            else {
+                return new dummy_file_crawler_1.DummyFileCrawler();
             }
         });
+    }
+    parseFiles(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let fileCrawlers = [];
+            for (const file of files) {
+                fileCrawlers.push(yield this.parseFile(file));
+            }
+            return fileCrawlers;
+        });
+    }
+    printCrawlersReport(fileCrawlers) {
+        const sortedCrawlers = fileCrawlers.sort((a, b) => {
+            return a.getScore() - b.getScore();
+        });
+        sortedCrawlers.forEach((crawler) => crawler.printReport());
     }
 }
 exports.FileSystemCrawler = FileSystemCrawler;

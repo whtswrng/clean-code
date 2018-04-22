@@ -1,8 +1,11 @@
 import * as _ from 'lodash';
 import {IFileCrawlerFactory} from "./file-crawler-factory.interface";
-import {IFileExtensionValidator} from "./validators/file-extension-validator.interface";
-import {IFileDeterminer} from "./determiners/file-determiner.interface";
+import {IFileExtensionValidator} from "../validators/file-extension-validator.interface";
+import {IFileDeterminer} from "../determiners/file-determiner.interface";
 import {IDirectoryCrawler} from "./directory-crawler.interface";
+import {IFileCrawler} from "./file-crawler.interface";
+import {DummyFileCrawler} from "./dummy-file-crawler";
+import {FileCrawler} from "./file-crawler";
 
 export class FileSystemCrawler {
 
@@ -18,21 +21,42 @@ export class FileSystemCrawler {
         if (await this.fileDeterminer.isDirectory(this.path)) {
             return this.parseRecursiveFolder(this.path);
         } else if (await this.fileDeterminer.isFile(this.path)) {
-            return this.parseFile(this.path);
+            const fileCrawler = await this.parseFile(this.path);
+            fileCrawler.printReport();
         }
     }
 
     private async parseRecursiveFolder(path): Promise<void> {
         const files = await this.directoryCrawler.recursive(path);
-        await Promise.all(_.map(files, (file) => this.parseFile(file)));
+        let fileCrawlers = await this.parseFiles(files);
+        this.printCrawlersReport(fileCrawlers);
     }
 
-    private async parseFile(path): Promise<void> {
-        if (this.fileExtensionValidator.hasCorrectFileExtension(path)) {
+    private async parseFile(path): Promise<IFileCrawler> {
+        if(this.fileExtensionValidator.hasCorrectFileExtension(path)) {
             const fileCrawler = this.fileCrawlerFactory.instantiate(path);
-            return fileCrawler.start()
+            await fileCrawler.process();
+            return fileCrawler;
+        } else {
+            return new DummyFileCrawler();
         }
     }
 
+    private async parseFiles(files: Array<string>): Promise<Array<IFileCrawler>> {
+        let fileCrawlers: Array<IFileCrawler> = [];
 
+        for(const file of files) {
+            fileCrawlers.push(await this.parseFile(file));
+        }
+
+        return fileCrawlers;
+    }
+
+    private printCrawlersReport(fileCrawlers: Array<IFileCrawler>): void {
+        const sortedCrawlers = fileCrawlers.sort((a, b) => {
+            return a.getScore() - b.getScore();
+        });
+
+        sortedCrawlers.forEach((crawler) => crawler.printReport());
+    }
 }

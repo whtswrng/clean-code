@@ -8,4 +8,5 @@ export class DummyFileCrawlerFactory implements IFileCrawlerFactory {
         return new DummyFileCrawler();
     }
 
+
 }

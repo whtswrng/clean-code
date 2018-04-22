@@ -1,23 +1,35 @@
-import {IFileParser} from "./file-parsers/file-parser.interface";
-import {ILineReader} from "./line-readers/line-reader.interface";
-import {IReporter} from "./reporters/reporter.interface";
+import {IFileParser} from "../file-parsers/file-parser.interface";
+import {ILineReader} from "../line-readers/line-reader.interface";
+import {ScoreCounter} from "../score-counters/score-counter";
+import {CliTable} from "../printers/cli-table";
+import {PrintableTable} from "../printers/table";
+import {IFileCrawler} from "./file-crawler.interface";
 
-export class FileCrawler {
+export class FileCrawler implements IFileCrawler {
 
     private fileParsers: Array<IFileParser> = [];
 
-    constructor(private path: string, private lineReader: ILineReader, private reporter: IReporter) {
+    constructor(private path: string, private lineReader: ILineReader, private scoreCounter: ScoreCounter,
+                private table: PrintableTable) {
     }
 
     public addFileParser(fileParser: IFileParser): void {
         this.fileParsers.push(fileParser);
     }
 
-    public async start(): Promise<any> {
+    public async process(): Promise<any> {
         return new Promise((resolve) => {
             this.startParsing();
             this.addListenersForFileCrawling(resolve);
         });
+    }
+
+    public getScore(): number {
+        return this.scoreCounter.count();
+    }
+
+    public printReport(): void {
+        return this.table.print();
     }
 
     private startParsing(): void {
@@ -30,12 +42,17 @@ export class FileCrawler {
     }
 
     private readLine(line): void {
-        this.fileParsers.forEach((fileParser: IFileParser) => fileParser.readLine(line));
+        this.fileParsers.forEach((fileParser: IFileParser) => {
+            try {
+                fileParser.readLine(line)
+            } catch (e) {
+                // console.error(e);
+            }
+        });
     }
 
     private stopLineReading(resolve): void {
         this.fileParsers.forEach((fileParser: IFileParser) => fileParser.stop());
-        this.reporter.print();
 
         resolve();
     }

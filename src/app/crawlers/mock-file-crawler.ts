@@ -1,14 +1,18 @@
 import {IFileCrawler} from "./file-crawler.interface";
 import {IFileParser} from "../file-parsers/file-parser.interface";
 
-export class DummyFileCrawler implements IFileCrawler {
+export class MockFileCrawler implements IFileCrawler {
 
+    constructor(private score: number, private printReportSpy: any) {
+
+    }
 
     getScore(): number {
-        return null;
+        return this.score;
     }
 
     printReport(): void {
+        this.printReportSpy(this.score);
     }
 
     public addFileParser(fileParser: IFileParser): void {
