@@ -7,25 +7,22 @@ import {DirectoryCrawler} from "./crawlers/directory-crawler";
 import * as Table from 'cli-table';
 import {BasicTableFormatter} from "./crawlers/table-formatters/basic-table-formatter";
 import * as colors from "colors/safe";
+import {CliTableFactory} from "./crawlers/printers/cli-table-factory";
 
 const crawlingPath = process.argv[2] || config.DEFAULT_PATH;
 const includedFileExtensions: IncludedFileExtensions = config.DEFAULT_FILE_INCLUDED_EXTENSIONS;
 const excludedFileExtensions: ExcludedFileExtensions = config.DEFAULT_FILE_EXCLUDED_EXTENSIONS;
 
-const table = new Table({
-    head: [colors.bold('What'), colors.bold('Value'), colors.bold('Average'), colors.bold('Max')]
-});
-
-const tableFormatter = new BasicTableFormatter(colors);
+const tableFormatter = new BasicTableFormatter(colors as any);
+const tableFactory = new CliTableFactory(tableFormatter, Table);
+const fileCrawlerFactory = new TypeScriptFileCrawlerFactory(tableFactory, tableFormatter);
 
 startJourney();
-
 
 function startJourney() {
     const fileExtensionValidator = new FileExtensionValidator(includedFileExtensions, excludedFileExtensions);
     const fileSystemCrawler = new FileSystemCrawler(
-        crawlingPath, new TypeScriptFileCrawlerFactory(table, tableFormatter), fileExtensionValidator,
-        new FileDeterminer(), new DirectoryCrawler()
+        crawlingPath, fileCrawlerFactory, fileExtensionValidator, new FileDeterminer(), new DirectoryCrawler()
     );
 
     fileSystemCrawler.start();

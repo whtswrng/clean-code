@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const table_formatter_1 = require("../../table-formatters/table-formatter");
 class TypeScriptClassReporter {
-    constructor(table, formatter) {
-        this.table = table;
+    constructor(tableFactory, formatter) {
+        this.tableFactory = tableFactory;
         this.formatter = formatter;
         this.dependencyCount = 0;
         this.classLines = 0;
@@ -11,11 +12,50 @@ class TypeScriptClassReporter {
         this.methodLineCountList = [];
     }
     print() {
-        this.table.push([this.formatter.formatClassName(this.className), ''], [this.formatter.formatName('Class lines count'), this.formatter.formatValue(this.classLines)], [this.formatter.formatName('Public methods'), this.formatter.formatValue(this.publicMethodsCount)], [this.formatter.formatName('Private methods'), this.formatter.formatValue(this.privateMethodsCount)], [this.formatter.formatName('Dependency count'), this.formatter.formatValue(this.dependencyCount)], [this.formatter.formatName('Method lines count'), '',
-            this.formatter.formatAverage(this.calculateAverageLines()),
-            this.formatter.formatMax(Math.max(...this.methodLineCountList))
+        if (this.className) {
+            this.createTable();
+        }
+    }
+    createTable() {
+        const table = this.tableFactory.instantiate(this.className);
+        this.fillTable(table);
+        console.log(table.toString());
+    }
+    fillTable(table) {
+        table.push([this.formatter.formatName('Class lines count'), this.formatter.formatValue(this.classLines)], [this.formatter.formatName('Public methods'), this.formatter.formatValue(this.publicMethodsCount)], [this.formatter.formatName('Private methods'), this.formatter.formatValue(this.privateMethodsCount)], [this.formatter.formatName('Dependency count'), this.formatter.formatValue(this.dependencyCount)], [this.formatter.formatName('Method lines count'), '',
+            this.formatter.formatValue(this.getAverageMethodLinesCount(), this.getFormatLevelForAverageMethodLinesCount()),
+            this.formatter.formatValue(this.getMaxMethodLinesCount(), this.getFormatLevelForMaxMethodLinesCount())
         ]);
-        console.log(this.table.toString());
+    }
+    getFormatLevelForMaxMethodLinesCount() {
+        const result = this.getAverageMethodLinesCount();
+        if (result >= 8) {
+            return table_formatter_1.FORMAT_LEVEL.STRICT;
+        }
+        else if (result >= 6) {
+            return table_formatter_1.FORMAT_LEVEL.WARNING;
+        }
+        else {
+            return table_formatter_1.FORMAT_LEVEL.OK;
+        }
+    }
+    getFormatLevelForAverageMethodLinesCount() {
+        const result = this.getAverageMethodLinesCount();
+        if (result >= 7) {
+            return table_formatter_1.FORMAT_LEVEL.STRICT;
+        }
+        else if (result >= 5) {
+            return table_formatter_1.FORMAT_LEVEL.WARNING;
+        }
+        else {
+            return table_formatter_1.FORMAT_LEVEL.OK;
+        }
+    }
+    getAverageMethodLinesCount() {
+        return this.calculateAverageLines() || null;
+    }
+    getMaxMethodLinesCount() {
+        return this.methodLineCountList.length ? Math.max(...this.methodLineCountList) : null;
     }
     setClassName(name) {
         this.className = name;

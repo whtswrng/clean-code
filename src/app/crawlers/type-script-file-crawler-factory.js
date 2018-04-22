@@ -10,23 +10,25 @@ const method_line_parser_1 = require("./file-parsers/typescript/class/method-lin
 const class_line_parser_1 = require("./file-parsers/typescript/class/class-line/class-line-parser");
 const class_import_counter_parser_1 = require("./file-parsers/typescript/class/class-import-counter/class-import-counter-parser");
 class TypeScriptFileCrawlerFactory {
-    constructor(table, tableFormatter) {
-        this.fileReporter = new type_script_class_reporter_1.TypeScriptClassReporter(table, tableFormatter);
+    constructor(tableFactory, tableFormatter) {
+        this.tableFactory = tableFactory;
+        this.tableFormatter = tableFormatter;
     }
     instantiate(path) {
-        const fileCrawler = new file_crawler_1.FileCrawler(path, new line_reader_1.LineReader(path), this.fileReporter);
-        this.initFileParsers(fileCrawler);
+        const fileReporter = new type_script_class_reporter_1.TypeScriptClassReporter(this.tableFactory, this.tableFormatter);
+        const fileCrawler = new file_crawler_1.FileCrawler(path, new line_reader_1.LineReader(path), fileReporter);
+        this.initFileParsers(fileCrawler, fileReporter);
         return fileCrawler;
     }
-    initFileParsers(fileCrawler) {
+    initFileParsers(fileCrawler, fileReporter) {
         const lineParser = new type_script_line_parser_1.TypeScriptLineParser();
         const classParser = new class_parser_1.TypescriptClassParser(lineParser, [
-            new class_line_parser_1.TypescriptClassLineParser(this.fileReporter, lineParser),
-            new method_counter_parser_1.TypescriptMethodCounterParser(this.fileReporter, lineParser),
-            new method_line_parser_1.TypescriptMethodLineParser(this.fileReporter, lineParser),
-        ], this.fileReporter);
+            new class_line_parser_1.TypescriptClassLineParser(fileReporter, lineParser),
+            new method_counter_parser_1.TypescriptMethodCounterParser(fileReporter, lineParser),
+            new method_line_parser_1.TypescriptMethodLineParser(fileReporter, lineParser),
+        ], fileReporter);
         fileCrawler.addFileParser(classParser);
-        fileCrawler.addFileParser(new class_import_counter_parser_1.TypescriptClassImportCounterParser(this.fileReporter, lineParser));
+        fileCrawler.addFileParser(new class_import_counter_parser_1.TypescriptClassImportCounterParser(fileReporter, lineParser));
     }
 }
 exports.TypeScriptFileCrawlerFactory = TypeScriptFileCrawlerFactory;

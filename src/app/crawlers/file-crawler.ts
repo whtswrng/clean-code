@@ -7,7 +7,6 @@ export class FileCrawler {
     private fileParsers: Array<IFileParser> = [];
 
     constructor(private path: string, private lineReader: ILineReader, private reporter: IReporter) {
-
     }
 
     public addFileParser(fileParser: IFileParser): void {
