@@ -6,6 +6,7 @@ export class FileParser implements IFileParser {
     protected filePath: string;
     protected lineNumber: number = 0;
     protected nestingCount: number = 0;
+    private shouldIncrement: boolean;
 
     constructor(protected lineParser: TypeScriptLineParser) {
 
@@ -17,13 +18,17 @@ export class FileParser implements IFileParser {
 
     public readLine(line: string): void {
         this.lineNumber++;
+        if(this.shouldIncrement) {
+            this.nestingCount++;
+            this.shouldIncrement = false;
+        }
         this.determineWhetherIncrementNestingCount(line);
         this.determineWhetherDecrementNestingCount(line);
     }
 
     private determineWhetherIncrementNestingCount(line: string): void {
         if (this.lineParser.countStartBracket(line) > this.lineParser.countEndBracket(line)) {
-            this.nestingCount++;
+            this.shouldIncrement = true;
         }
     }
 

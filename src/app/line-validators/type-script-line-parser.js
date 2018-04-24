@@ -6,8 +6,8 @@ exports.END_BRACKET = /}/g;
 exports.MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
 exports.ES6_CALLBACK = /=>\s*{/g;
 exports.CLASS_DEFINITION = /class\s+(\w+)/g;
-exports.PRIVATE_METHOD_DEFINITION = /private\s+(\w+\s)?\w+\s*\(.*/g;
-exports.PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|constructor|return)(public\s+)?(\w+\s)?\w+\s*\(.*/g;
+exports.PRIVATE_METHOD_DEFINITION = /private\s+(\w+\s)?\w+(\s*<\w+>)?\s*\(.*/g;
+exports.PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|return)(@Input\(\)\s*)?(public\s+)?(\w+\s)?\w+(\s*<\w+>)?\s*\(.*/g;
 exports.IMPORT_STATEMENT = /^\s*import.+/g;
 exports.IMPORT_STATEMENT_WITH_CLASSES = /^\s*import\s+{(.+)}.+/g;
 class TypeScriptLineParser {

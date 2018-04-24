@@ -11,12 +11,16 @@ class FileParser {
     }
     readLine(line) {
         this.lineNumber++;
+        if (this.shouldIncrement) {
+            this.nestingCount++;
+            this.shouldIncrement = false;
+        }
         this.determineWhetherIncrementNestingCount(line);
         this.determineWhetherDecrementNestingCount(line);
     }
     determineWhetherIncrementNestingCount(line) {
         if (this.lineParser.countStartBracket(line) > this.lineParser.countEndBracket(line)) {
-            this.nestingCount++;
+            this.shouldIncrement = true;
         }
     }
     determineWhetherDecrementNestingCount(line) {

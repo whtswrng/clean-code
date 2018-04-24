@@ -116,14 +116,37 @@ describe('Typescript Method Counter Parser', () => {
         expect(reporter.reportPublicMethod).not.to.have.been.called;
     });
 
-    it('should ignore constructor', () => {
+    it('should NOT report public method for edge cases', () => {
+        methodCounterParser.readLine('return (index + 1).toString().indexOf(searchedWord) === 0;');
+
+        expect(reporter.reportPublicMethod).not.to.have.been.called;
+    });
+
+    it('should report public method for edge cases', () => {
+        methodCounterParser.readLine('public sendQuery<T>(actionName: string, data: any,');
+        methodCounterParser.readLine('public sendQuery  <T>(actionName: string, data: any,');
+        methodCounterParser.readLine('@Input() set sendQuery  <T>(actionName: string, data: any,');
+        methodCounterParser.readLine('@Input()set sendQuery  <T>(actionName: string, data: any,');
+        methodCounterParser.readLine('@Input()public set sendQuery  <T>(actionName: string, data: any,');
+
+        expect(reporter.reportPublicMethod).to.have.been.callCount(5);
+    });
+
+    it('should report private method for edge cases', () => {
+        methodCounterParser.readLine('private sendQuery<T>(actionName: string, data: any,');
+        methodCounterParser.readLine('private sendQuery  <T>(actionName: string, data: any,');
+
+        expect(reporter.reportPrivateMethod).to.have.been.calledTwice;
+    });
+
+    it('should NOT ignore constructor', () => {
         methodCounterParser.readLine('constructor() {');
         methodCounterParser.readLine('  if (a > 10) {');
         methodCounterParser.readLine('      sum(44);');
         methodCounterParser.readLine('  }');
         methodCounterParser.readLine('}');
 
-        expect(reporter.reportPublicMethod).not.to.have.been.called;
+        expect(reporter.reportPublicMethod).to.have.been.calledOnce;
     });
 
     it('should report explicit public method', () => {
