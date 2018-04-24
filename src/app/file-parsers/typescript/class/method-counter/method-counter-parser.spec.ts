@@ -55,6 +55,15 @@ describe('Typescript Method Counter Parser', () => {
     });
 
     it('should report private method', () => {
+        methodCounterParser.readLine('foo');
+        methodCounterParser.readLine('const blouf = 434;');
+        methodCounterParser.readLine('private foo() {return 3;}');
+        methodCounterParser.readLine('const = () => {');
+
+        expect(reporter.reportPrivateMethod).to.have.been.calledOnce;
+    });
+
+    it('should report private method', () => {
         methodCounterParser.readLine('private foo() {');
         methodCounterParser.readLine('  if (a > 10) {');
         methodCounterParser.readLine('      sum(44);');
@@ -99,6 +108,12 @@ describe('Typescript Method Counter Parser', () => {
         methodCounterParser.readLine('}');
 
         expect(reporter.reportPublicMethod).to.have.been.calledOnce;
+    });
+
+    it('should NOT report public method for edge cases', () => {
+        methodCounterParser.readLine('return (index + 1).toString().indexOf(searchedWord) === 0;');
+
+        expect(reporter.reportPublicMethod).not.to.have.been.called;
     });
 
     it('should ignore constructor', () => {

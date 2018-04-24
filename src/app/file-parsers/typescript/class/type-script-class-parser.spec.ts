@@ -71,6 +71,54 @@ describe('Typescript Class Parser', () => {
         expect(fileParser.stop).to.have.been.calledOnce;
     });
 
+    it('should call stop on the file parser if line contains ending class bracket', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  bleblelble');
+        classParser.readLine('}');
+
+        expect(fileParser.stop).to.have.been.calledOnce;
+    });
+
+    it('should call stop on the file parser if line contains ending class bracket', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  private foo() {');
+        classParser.readLine('      .subscribe((data) => {');
+        classParser.readLine('      }, (err) => {');
+        classParser.readLine('      });');
+        classParser.readLine('  }');
+        classParser.readLine('}');
+
+        expect(fileParser.stop).to.have.been.calledOnce;
+    });
+
+    it('should NOT call stop on the file parser if line contains ending class bracket', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  private foo() {');
+        classParser.readLine('     mutate({');
+        classParser.readLine('         update: (proxy, { data: { addEmployee } }) => { ');
+        classParser.readLine('         }');
+        classParser.readLine('     });');
+        classParser.readLine('  }');
+
+        expect(fileParser.stop).not.to.have.been.called;
+    });
+
+    it('should NOT call stop on the file parser if class does not really ended', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  private foo() {return 3};');
+
+        expect(fileParser.stop).not.to.have.been.called;
+    });
+
+    it('should call stop on the file parser if class ended', () => {
+        classParser.readLine('class Foo {');
+        classParser.readLine('  private foo() {return 3};');
+        classParser.readLine('}');
+        classParser.readLine('}');
+
+        expect(fileParser.stop).to.have.been.called;
+    });
+
     it('should set class name to the reporter if line contains class definition', () => {
         classParser.readLine('blublub');
         classParser.readLine('class FooBarBaz {');

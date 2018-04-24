@@ -11,20 +11,16 @@ class FileParser {
     }
     readLine(line) {
         this.lineNumber++;
-        this.processNestingCount(line);
         this.determineWhetherIncrementNestingCount(line);
+        this.determineWhetherDecrementNestingCount(line);
     }
     determineWhetherIncrementNestingCount(line) {
-        if (this.lineParser.hasStartBraces(line)) {
-            this.shouldIncrementNestingCount = true;
+        if (this.lineParser.countStartBracket(line) > this.lineParser.countEndBracket(line)) {
+            this.nestingCount++;
         }
     }
-    processNestingCount(line) {
-        if (this.shouldIncrementNestingCount) {
-            this.nestingCount++;
-            this.shouldIncrementNestingCount = false;
-        }
-        if (this.lineParser.hasEndBracket(line)) {
+    determineWhetherDecrementNestingCount(line) {
+        if (this.lineParser.countEndBracket(line) > this.lineParser.countStartBracket(line)) {
             this.nestingCount--;
         }
     }

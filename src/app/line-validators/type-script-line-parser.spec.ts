@@ -21,12 +21,27 @@ describe('Type Script Line Parser', () => {
     });
 
     it('should recognize nesting starting braces', () => {
-        expect(lineParser.hasStartBraces('if () {')).to.eq(true);
-        expect(lineParser.hasStartBraces('{};')).to.eq(true);
+        expect(lineParser.hasStartBracket('if () {')).to.eq(true);
+        expect(lineParser.hasStartBracket('{};')).to.eq(true);
+    });
+
+    it('should count start brackets', () => {
+        expect(lineParser.countStartBracket('if () {')).to.eq(1);
+        expect(lineParser.countStartBracket('if () orem dorem solem }')).to.eq(0);
+        expect(lineParser.countStartBracket('{};')).to.eq(1);
+        expect(lineParser.countStartBracket('update: (proxy, { data: { addEmployee } }) => { ')).to.eq(3);
+    });
+
+    it('should count end brackets', () => {
+        expect(lineParser.countEndBracket('if () }')).to.eq(1);
+        expect(lineParser.countEndBracket('if () orem dorem solem {')).to.eq(0);
+        expect(lineParser.countEndBracket('{};')).to.eq(1);
+        expect(lineParser.countEndBracket('update: (proxy, { data: { addEmployee } }) => { ')).to.eq(2);
     });
 
     it('should recognize nesting ending braces', () => {
         expect(lineParser.hasEndBracket('};')).to.eq(true);
+        expect(lineParser.hasEndBracket('});')).to.eq(true);
         expect(lineParser.hasEndBracket('}')).to.eq(true);
         expect(lineParser.hasEndBracket('{};')).to.eq(true);
     });

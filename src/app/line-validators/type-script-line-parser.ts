@@ -5,7 +5,7 @@ export const MORE_THAN_THREE_ARGUMENTS = /\(.+,.+,.+\,.+\)/g;
 export const ES6_CALLBACK = /=>\s*{/g;
 export const CLASS_DEFINITION = /class\s+(\w+)/g;
 export const PRIVATE_METHOD_DEFINITION = /private\s+(\w+\s)?\w+\s*\(.*/g;
-export const PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|constructor)(public\s+)?(\w+\s)?\w+\s*\(.*/g;
+export const PUBLIC_METHOD_DEFINITION = /^\s*(?!function|private|constructor|return)(public\s+)?(\w+\s)?\w+\s*\(.*/g;
 export const IMPORT_STATEMENT = /^\s*import.+/g;
 export const IMPORT_STATEMENT_WITH_CLASSES = /^\s*import\s+{(.+)}.+/g;
 
@@ -15,7 +15,7 @@ export class TypeScriptLineParser {
         return !!line.match(METHOD_START_REGEXP);
     }
 
-    public hasStartBraces(line: string): boolean {
+    public hasStartBracket(line: string): boolean {
         return !!line.match(START_BRACES);
     }
 
@@ -61,5 +61,15 @@ export class TypeScriptLineParser {
 
     public hasImportStatement(line: string): boolean {
         return !!line.match(IMPORT_STATEMENT);
+    }
+
+    public countStartBracket(line: string): number {
+        const match = line.match(START_BRACES);
+        return match ? match.length : 0;
+    }
+
+    public countEndBracket(line: string): number {
+        const match = line.match(END_BRACKET);
+        return match ? match.length : 0;
     }
 }
