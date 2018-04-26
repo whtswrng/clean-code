@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import {IFileCrawlerFactory} from "./file-crawler-factory.interface";
 import {IFileExtensionValidator} from "../validators/file-extension-validator.interface";
 import {IFileDeterminer} from "../determiners/file-determiner.interface";
@@ -18,6 +17,14 @@ export class FileSystemCrawler {
     }
 
     public async start(): Promise<void> {
+        try {
+            await this.process();
+        } catch(e) {
+            console.log(`Error while parsing given path: ${e}`);
+        }
+    }
+
+    private async process(): Promise<void> {
         if (await this.fileDeterminer.isDirectory(this.path)) {
             return this.parseRecursiveFolder(this.path);
         } else if (await this.fileDeterminer.isFile(this.path)) {

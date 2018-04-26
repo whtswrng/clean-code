@@ -19,6 +19,16 @@ class FileSystemCrawler {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.process();
+            }
+            catch (e) {
+                console.log(`Error while parsing given path: ${e}`);
+            }
+        });
+    }
+    process() {
+        return __awaiter(this, void 0, void 0, function* () {
             if (yield this.fileDeterminer.isDirectory(this.path)) {
                 return this.parseRecursiveFolder(this.path);
             }
