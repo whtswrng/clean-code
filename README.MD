@@ -23,19 +23,13 @@ cleancode ./src/app/foo.ts
 ```
 
 ## Output
-┌───────────────────────┬───────┬─────────┬─────┐
-│ SellerSnapshotBuilder │ Value │ Average │ Max │
-├───────────────────────┼───────┼─────────┼─────┤
-│ Class lines count     │ 85    │
-├───────────────────────┼───────┼─────────┼─────┤
-│ Public methods        │ 2     │
-├───────────────────────┼───────┼─────────┼─────┤
-│ Private methods       │ 6     │
-├───────────────────────┼───────┼─────────┼─────┤
-│ Dependency count      │ 13    │
-├───────────────────────┼───────┼─────────┼─────┤
-│ Method lines count    │       │ 7.63    │ 49  │
-└───────────────────────┴───────┴─────────┴─────┘
+
+// per class
+Class lines      (Number of class lines)
+Public methods   (Number of public methods)
+Private methods  (Number of private methods)
+Dependencies     (Number of dependencies)
+Method lines     (Max and average number of method lines)
 
 ## License
 

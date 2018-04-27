@@ -35,11 +35,11 @@ export class CliTable implements PrintableTable{
 
     private fillTable(table: Table, report: Report): void {
         table.push(
-            [this.formatter.formatName('Class lines count'), this.formatter.formatValue(report.CLASS_LINES, this.getFormatLevelForClassLines(report.CLASS_LINES))],
+            [this.formatter.formatName('Class lines'), this.formatter.formatValue(report.CLASS_LINES, this.getFormatLevelForClassLines(report.CLASS_LINES))],
             [this.formatter.formatName('Public methods'), this.formatter.formatValue(report.PUBLIC_METHODS, this.getFormatLevelForPublicMethods(report.PUBLIC_METHODS))],
             [this.formatter.formatName('Private methods'), this.formatter.formatValue(report.PRIVATE_METHODS, this.getFormatLevelForPrivateMethods(report.PRIVATE_METHODS))],
-            [this.formatter.formatName('Dependency count'), this.formatter.formatValue(report.DEPENDENCIES, this.getFormatLevelForDependencies(report.DEPENDENCIES))],
-            [this.formatter.formatName('Method lines count'), '',
+            [this.formatter.formatName('Dependencies'), this.formatter.formatValue(report.DEPENDENCIES, this.getFormatLevelForDependencies(report.DEPENDENCIES))],
+            [this.formatter.formatName('Method lines'), '',
                 this.formatter.formatValue(
                     report.AVERAGE_METHOD_LINES, this.getFormatLevelForAverageMethodLinesCount(report.AVERAGE_METHOD_LINES)
                 ),
