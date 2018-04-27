@@ -24,13 +24,14 @@ cleancode ./src/app/foo.ts
 
 ## Output
 
+```
 // per class
 Class lines      (Number of class lines)
 Public methods   (Number of public methods)
 Private methods  (Number of private methods)
 Dependencies     (Number of dependencies)
 Method lines     (Max and average number of method lines)
-
+```
 ## License
 
 MIT
