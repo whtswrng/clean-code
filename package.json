@@ -10,7 +10,7 @@
     "test:unit": "tsc && mocha --opts mocha.opts"
   },
   "bin": {
-    "cleancode": "./bin/index.js"
+    "cleancode": "./dist/bin/index.js"
   },
   "author": "whtswrng",
   "license": "MIT",
